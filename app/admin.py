@@ -1,11 +1,13 @@
 from flask_admin.contrib.sqla import ModelView
 from flask_admin import Admin, BaseView, expose, AdminIndexView
 from app import app, db, dao
-from app.models import Category, Product
+from app.models import Category, Product,NhanVien
 
 from flask_login import logout_user, current_user
 from flask import redirect
 from app.models import UserRoleEnum
+from flask_admin.form import FileUploadField
+from wtforms import StringField
 
 
 
@@ -56,6 +58,23 @@ class MyLogoutView(AuthenticatedUser):
         return redirect('/admin')
 
 
+
+
+class NhanVienView(AuthenticatedAdmin):
+    column_list = ['maNV', 'hoTen', 'ngayVaoLam', 'diaChi', 'email']
+    column_display_pk = True
+    column_searchable_list = ['hoTen']
+    column_filters = ['maNV', 'hoTen', 'ngayVaoLam', 'diaChi', 'email']
+    can_export = True
+    can_view_details = True
+
+    # Add a file upload field for the 'avatar' attribute
+    form_extra_fields = {
+        'avatar': FileUploadField('Avatar')
+    }
+
+
+admin.add_view(NhanVienView(NhanVien, db.session))
 admin.add_view(MyCategoryVIew(Category, db.session))
 admin.add_view(MyProductView(Product, db.session))
 admin.add_view(MyStatsView(name='Thong ke bao cao'))

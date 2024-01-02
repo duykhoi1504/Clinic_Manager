@@ -1,5 +1,4 @@
 #truy xuất Csdl
-
 from app.models import Category, Product, User, Receipt, ReceiptDetails
 import hashlib
 from app import app, db
