@@ -2,10 +2,11 @@
 from sqlalchemy import Column, Integer, String,Boolean, Float, ForeignKey, Enum, DateTime
 from sqlalchemy.orm import relationship
 from app import db
-from flask_login import  UserMixin
+from flask_login import UserMixin
 import enum
 from datetime import datetime
-from app import initTables, createValues
+from app import initTables
+# from app.model import NhanVienModel
 
 class UserRoleEnum(enum.Enum):
     USER=1
@@ -23,7 +24,11 @@ class User(db.Model, UserMixin):
     password = Column(String(100), nullable=False)
     avatar = Column(String(100), default='https://th.bing.com/th/id/OIP.48Pj-NVeziMTgdX6rHGpKAHaI1?w=162&h=194&c=7&r=0&o=5&dpr=1.1&pid=1.7')
     user_role = Column(Enum(UserRoleEnum),default=UserRoleEnum.USER)
+
+    # nhanvien = relationship('NhanVien', backref='user' , lazy=True)
+
     receipts = relationship('Receipt',backref='user',lazy=True)
+
 
     def __str__(self):
         return self.name
@@ -74,7 +79,7 @@ if __name__=="__main__":
     from app import app
     with app.app_context():
         initTables()
-        createValues()
+        # createValues()
         # -----------------------
         # import hashlib
         # u = User(name='Admin',

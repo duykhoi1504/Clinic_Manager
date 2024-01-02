@@ -9,8 +9,9 @@ class BenhNhan(PersonModel, db.Model):
     __tablename__ = 'BenhNhan'
 
     # attribute
-    customer_id = Column(Integer, primary_key=True, autoincrement=True)
+    maBN = Column(Integer, primary_key=True, autoincrement=True)
 
+    lichkhambenh = relationship('lichkhambenh', backref=backref('benhnhan', lazy=True))
 
     def __str__(self):
         return self.name

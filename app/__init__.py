@@ -25,12 +25,12 @@ cloudinary.config(
 )
 
 
-
+from app.model.NhanVienModel import NhanVien
 from app.model.PersonModel import PersonModel
 from app.model.BacSiModel import BacSi
 from app.model.BenhNhanModel import BenhNhan
-from app.model.NhanVienModel import NhanVien
 from app.model.YTaModel import YTa
+from app.model.LichKhamBenhModel import LichKhamBenh
 
 def initTables():
     try:
@@ -41,7 +41,7 @@ def initTables():
 
 
 
-def createValues():
+#def createValues():
     # d1 = BacSi(
     #     hoTen="Nguyễn Thị Thu Hồng",
     #     ngaySinh=datetime(1990, 1, 1),
@@ -95,6 +95,6 @@ def createValues():
     # )
 
 
-
-    db.session.add_all([d1, d2, d3, d4])
-    db.session.commit()
+    #
+    # db.session.add_all([d1, d2, d3, d4])
+    # db.session.commit()
