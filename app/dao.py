@@ -1,5 +1,5 @@
 #truy xuất Csdl
-from app.models import Category, Product, User, Receipt, ReceiptDetails
+from app.models import Category, Product, User, Receipt, ReceiptDetails,NhanVien,BenhNhan
 import hashlib
 from app import app, db
 import cloudinary.uploader
@@ -21,6 +21,19 @@ def load_products(kw=None,page=None):
         return products.slice(start, start + page_size)
 
     return products.all()
+
+def load_nhanviens(kw=None,page=None):
+    nhanviens = NhanVien.query
+    if kw:
+        nhanviens = nhanviens.filter(Product.name.contains((kw)))
+
+    if page:
+        page = int(page)
+        page_size = app.config["PAGE_SIZE"]
+        start = (page-1)*page_size
+        return nhanviens.slice(start, start + page_size)
+
+    return nhanviens.all()
 
 
 def count_product():
@@ -49,6 +62,12 @@ def add_user(name, username, password, avatar):
     db.session.add(u)
     db.session.commit()
 
+
+def add_benhnhan(hoTen,ngaySinh,maCCCD,diaChi,email,soDienThoai,tienSuBenh,sex):
+    BN=BenhNhan(hoTen=hoTen,ngaySinh=ngaySinh,maCCCD=maCCCD,diaChi=diaChi,email=email,
+                soDienThoai=soDienThoai,tienSuBenh=tienSuBenh,sex=sex)
+    db.session.add(BN)
+    db.session.commit()
 
 def add_receipt(cart):
     if cart:

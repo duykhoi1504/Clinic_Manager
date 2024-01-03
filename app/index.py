@@ -11,16 +11,54 @@ def index():
     kw = request.args.get('kw')
     page = request.args.get('page')
     cates = dao.load_categories()
-
     products=dao.load_products(kw=kw,page=page)
+    nhanviens=dao.load_nhanviens(kw=kw,page=page)
 
+    image_data = [
+        {'url': 'https://hoanmy.com/wp-content/uploads/2023/12/dai-thao-duong.png', 'title': 'Những biến chứng nguy hiểm của đái tháo đường và cách phòng ngừa',
+         'content': 'Thời gian gần đây, tỷ lệ người bệnh đái tháo đường đang gia tăng khá cao. Theo số liệu từ Hiệp hội Đái tháo đường Thế giới (International Diabetes Federation – IDF), vào năm 2019, thế giới có khoảng 463 triệu người mắc bệnh đái tháo đường. Trong số đó, ước tính hơn 4 triệu […]'},
+        {'url': 'https://hoanmy.com/wp-content/uploads/2023/12/suy-gian-tinh-mach-1706-x-1080-px.png', 'title': 'Cách phòng ngừa, điều trị suy giãn tĩnh mạch để tránh biến chứng về sau',
+         'content': 'Suy giãn tĩnh mạch là căn bệnh phổ biến hiện nay, ảnh hưởng tới chất lượng cuộc sống người bệnh. Nếu không được điều trị đúng cách, bệnh có thể gây nên nhiều biến chứng nguy hiểm. Hãy cùng bệnh viện Hoàn Mỹ Sài Gòn tìm hiểu về cách phòng ngừa và điều trị suy […]'},
+        # Thêm các phần tử khác nếu cần
+        {'url': 'https://hoanmy.com/wp-content/uploads/2023/11/AdobeStock_455652091-scaled.jpeg', 'title': 'Điều trị ung thư dạ dày ở đâu tốt?',
+         'content': 'Theo số liệu từ Globocan 2020, ung thư dạ dày thuộc nhóm có tỷ lệ tử vong cao thứ 3 tại Việt Nam, và ngày nay loại ung thư này đang có xu hướng trẻ hóa. Chính vì thế, việc nắm được các dấu hiệu của bệnh ung thư dạ dày và tầm soát sức […]'},
+        {'url': 'https://hoanmy.com/wp-content/uploads/2023/10/BCSCHU1-1.jpg', 'title': 'Hạ đường huyết có nguy hiểm không? Nguyên nhân và cách xử trí',
+         'content': 'Hạ đường huyết là tình trạng dễ gặp ở người bệnh đái tháo đường hoặc người ăn uống không khoa học. Đây là dấu hiệu cảnh báo một số vấn đề nghiêm trọng của cơ thể, cần phát hiện kịp thời và có biện pháp xử lý nhanh để tránh biến chứng nguy hiểm. Hạ […]'},
+    ]
     total = dao.count_product()
 
     return render_template("index.html",
+                           products=products,nhanviens=nhanviens,image_data=image_data,
+                           pages=math.ceil(total / app.config['PAGE_SIZE']))
 
-                           products=products,
-                           pages=math.ceil(total / app.config['PAGE_SIZE'])                           )
 
+@app.route("/addBenhNhan",methods=['post', 'get'])
+def add_benh_nhan():
+    err_msg = ""
+    success_message = ""
+    if request.method.__eq__('POST'):
+        hoTen = request.form.get('hoTen')
+        ngaySinh = request.form.get('ngaySinh')
+        maCCCD = request.form.get('maCCCD')
+        diaChi = request.form.get('diaChi')
+        email = request.form.get('email')
+        soDienThoai = request.form.get('soDienThoai')
+        tienSuBenh = request.form.get('tienSuBenh')
+        sex = request.form.get('sex')
+
+        if not all([hoTen, ngaySinh, maCCCD, diaChi, email, soDienThoai, tienSuBenh, sex]):
+            err_msg = "Please fill in all required fields."
+            return render_template("BenhNhan.html", err_msg=err_msg)
+        try:
+            dao.add_benhnhan(hoTen=hoTen,ngaySinh=ngaySinh,maCCCD=maCCCD,diaChi=diaChi,email=email,soDienThoai=soDienThoai,tienSuBenh=tienSuBenh,sex=sex)
+            success_message = "BenhNhan added successfully!"
+            err_msg = ""
+        except:
+            success_message = ""
+            err_msg = "he thong dang loi!"
+
+        return render_template("BenhNhan.html", err_msg=err_msg,success_message=success_message)
+    return render_template("BenhNhan.html", err_msg=err_msg,success_message=success_message)
 
 @app.route("/products/<id>")
 def details(id):

@@ -126,6 +126,7 @@ class BenhNhan(PersonModel, db.Model):
 
     # attribute
     maBN = Column(Integer, primary_key=True, autoincrement=True)
+    tienSuBenh = Column(String(200), default='Không')
     lichkhambenh = relationship('LichKhamBenh', backref='benhnhan', lazy=True)
 
     def __str__(self):
@@ -136,7 +137,6 @@ class LichKhamBenh(db.Model):
 
     # attribute
     id = Column(Integer, primary_key=True, autoincrement=True)
-    thuTuKham = Column(Integer, nullable=False)
     loaiDangKi = Column(Integer, nullable=False)
 
     maBN = Column(Integer, ForeignKey(BenhNhan.maBN))
@@ -172,57 +172,57 @@ if __name__=="__main__":
         # db.session.add_all([u1,u2,u3])
         # db.session.commit()
         #######################
-        d1 = BacSi(
-            hoTen="Nguyễn Thị Thu Hồng",
-            ngaySinh=datetime(1990, 1, 1),
-            maCCCD="123456789012",
-            diaChi="123 Main St",
-            email="john.doe@example.com",
-            soDienThoai="1234567890",
-            sex=Sex.MALE,
-            ngayVaoLam=datetime.now(),
-            avatar="https://hoanmy.com/wp-content/uploads/2023/05/HMSGC-Bs-Phan-Thanh-Tuoi.jpg"
-
-        )
-        d2 = BacSi(
-            hoTen="Phan Thanh Tươi",
-            ngaySinh=datetime(2003, 1, 1),
-            maCCCD="123456789013",
-            diaChi="127 Main St",
-            email="ThanhDat@example.com",
-            soDienThoai="1234567891",
-            sex=Sex.MALE,
-            ngayVaoLam=datetime(2020, 2, 1),
-            avatar="https://hoanmy.com/wp-content/uploads/2023/05/HMSGC-Bs-Phan-Thanh-Tuoi.jpg"
-
-        )
-        d3 = BacSi(
-            hoTen="Đặng Thị Thu Bé",
-            ngaySinh=datetime(2003, 1, 1),
-            maCCCD="123456789014",
-            diaChi="127 Main St",
-            email="ThanhDat@example.com",
-            soDienThoai="1234567891",
-            sex=Sex.MALE,
-            ngayVaoLam=datetime(2020, 2, 1),
-            avatar="https://hoanmy.com/wp-content/uploads/2023/05/HMSGC-THAY-THUOC-UU-TU.-DANG-THI-BE-THU.jpg"
-
-        )
-        d4 = BacSi(
-            hoTen="Thạch Minh Huy",
-            ngaySinh=datetime(2003, 1, 1),
-            maCCCD="123456789015",
-            diaChi="127 Main St",
-            email="ThanhDat@example.com",
-            soDienThoai="1234567891",
-            sex=Sex.MALE,
-            ngayVaoLam=datetime(2020, 2, 1),
-            avatar="https://hoanmy.com/wp-content/uploads/2023/05/HMSGC-Bs-Thach-Minh-Huy.jpg"
-        )
-
-
-        db.session.add_all([d1, d2, d3, d4])
-        db.session.commit()
+        # d1 = BacSi(
+        #     hoTen="Nguyễn Thị Thu Hồng",
+        #     ngaySinh=datetime(1990, 1, 1),
+        #     maCCCD="123456789012",
+        #     diaChi="123 Main St",
+        #     email="john.doe@example.com",
+        #     soDienThoai="1234567890",
+        #     sex=Sex.MALE,
+        #     ngayVaoLam=datetime.now(),
+        #     avatar="https://hoanmy.com/wp-content/uploads/2023/05/HMSGC-Bs-Phan-Thanh-Tuoi.jpg"
+        #
+        # )
+        # d2 = BacSi(
+        #     hoTen="Phan Thanh Tươi",
+        #     ngaySinh=datetime(2003, 1, 1),
+        #     maCCCD="123456789013",
+        #     diaChi="127 Main St",
+        #     email="ThanhDat@example.com",
+        #     soDienThoai="1234567891",
+        #     sex=Sex.MALE,
+        #     ngayVaoLam=datetime(2020, 2, 1),
+        #     avatar="https://hoanmy.com/wp-content/uploads/2023/05/HMSGC-Bs-Phan-Thanh-Tuoi.jpg"
+        #
+        # )
+        # d3 = BacSi(
+        #     hoTen="Đặng Thị Thu Bé",
+        #     ngaySinh=datetime(2003, 1, 1),
+        #     maCCCD="123456789014",
+        #     diaChi="127 Main St",
+        #     email="ThanhDat@example.com",
+        #     soDienThoai="1234567891",
+        #     sex=Sex.MALE,
+        #     ngayVaoLam=datetime(2020, 2, 1),
+        #     avatar="https://hoanmy.com/wp-content/uploads/2023/05/HMSGC-THAY-THUOC-UU-TU.-DANG-THI-BE-THU.jpg"
+        #
+        # )
+        # d4 = BacSi(
+        #     hoTen="Thạch Minh Huy",
+        #     ngaySinh=datetime(2003, 1, 1),
+        #     maCCCD="123456789015",
+        #     diaChi="127 Main St",
+        #     email="ThanhDat@example.com",
+        #     soDienThoai="1234567891",
+        #     sex=Sex.MALE,
+        #     ngayVaoLam=datetime(2020, 2, 1),
+        #     avatar="https://hoanmy.com/wp-content/uploads/2023/05/HMSGC-Bs-Thach-Minh-Huy.jpg"
+        # )
+        #
+        #
+        # db.session.add_all([d1, d2, d3, d4])
+        # db.session.commit()
       #########################
         # c1 = Category(name="Iphone")
         # c2 = Category(name="tablet")

@@ -1,7 +1,7 @@
 from flask_admin.contrib.sqla import ModelView
 from flask_admin import Admin, BaseView, expose, AdminIndexView
 from app import app, db, dao
-from app.models import Category, Product,NhanVien
+from app.models import Category, Product,NhanVien,BenhNhan,LichKhamBenh
 
 from flask_login import logout_user, current_user
 from flask import redirect
@@ -21,16 +21,38 @@ class MyAdminIndex(AdminIndexView):
 admin = Admin(app=app, name="Quan ly ban hang", template_mode="bootstrap4", index_view=MyAdminIndex())
 
 
+#kiem tra co phai tai khoan user
 class AuthenticatedUser(BaseView):
     def is_accessible(self):
         return current_user.is_authenticated
 
 
+#kiem tra co phai tai khoan BacSi
+class AuthenticatedBacSi(ModelView):
+    def is_accessible(self):
+        return current_user.is_authenticated and current_user.user_role in [UserRoleEnum.BACSI, UserRoleEnum.ADMIN]
+
+
+#kiem tra co phai tai khoan Y tá
+class AuthenticatedYTa(ModelView):
+    def is_accessible(self):
+        return current_user.is_authenticated and current_user.user_role in [UserRoleEnum.YTA, UserRoleEnum.ADMIN]
+
+
+#kiem tra co phai tai khoan Thu Ngan
+class AuthenticatedYTa(ModelView):
+    def is_accessible(self):
+        return current_user.is_authenticated and current_user.user_role in [UserRoleEnum.THUNGAN, UserRoleEnum.ADMIN]
+
+
+
+
+#kiem tra co phai tai khoan Admin
 class AuthenticatedAdmin(ModelView):
     def is_accessible(self):
         return current_user.is_authenticated and current_user.user_role == UserRoleEnum.ADMIN
 
-
+#############################################
 class MyProductView(AuthenticatedAdmin):
     column_display_pk = True
     column_list = ['id', 'name', 'price', 'category']
@@ -60,6 +82,8 @@ class MyLogoutView(AuthenticatedUser):
 
 
 
+
+
 class NhanVienView(AuthenticatedAdmin):
     column_list = ['maNV', 'hoTen', 'ngayVaoLam', 'diaChi', 'email']
     column_display_pk = True
@@ -68,12 +92,28 @@ class NhanVienView(AuthenticatedAdmin):
     can_export = True
     can_view_details = True
 
-    # Add a file upload field for the 'avatar' attribute
-    form_extra_fields = {
-        'avatar': FileUploadField('Avatar')
-    }
+    # # Add a file upload field for the 'avatar' attribute
+    # form_extra_fields = {
+    #     'avatar': FileUploadField('Avatar', base_path='path/to/upload/folder')
+    # }
 
 
+class BenhNhanView(AuthenticatedBacSi):
+    column_list = ['maBN', 'hoTen', 'diaChi', 'soDienThoai','lichkhambenh']
+    column_display_pk = True
+    column_searchable_list = ['hoTen']
+    column_filters = ['maBN', 'hoTen', 'diaChi', 'soDienThoai']
+    can_export = True
+    can_view_details = True
+
+
+class LichKhamBenhView(AuthenticatedAdmin):
+    column_list = ['id', 'thuTuKham', 'loaiDangKi']
+
+
+
+admin.add_view(LichKhamBenhView(LichKhamBenh, db.session))
+admin.add_view(BenhNhanView(BenhNhan, db.session))
 admin.add_view(NhanVienView(NhanVien, db.session))
 admin.add_view(MyCategoryVIew(Category, db.session))
 admin.add_view(MyProductView(Product, db.session))
