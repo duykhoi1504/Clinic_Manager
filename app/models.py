@@ -288,7 +288,7 @@ class BieuMau(db.Model):
     def __str__(self):
         return self.name
 
-
+#QuanLy
 
 class QuanLy(db.Model):
     __tablename__ = 'quanly'
@@ -299,6 +299,8 @@ class QuanLy(db.Model):
     maPhieuKham_id = Column(Integer, ForeignKey(PhieuKhamBenh.maPhieuKham))
     hoaDon_id = Column(Integer, ForeignKey(HoaDonThanhToan.maHD))
     danhSachKhamBenh_id = Column(Integer, ForeignKey(DanhSachKhamBenh.id))
+
+    admin = relationship('Admin', backref='quanly', lazy=True)
 
     def __str__(self):
         return self.name
