@@ -100,14 +100,16 @@ class NhanVien(PersonModel, db.Model):
         return self.name
 
 
-# class YTa(NhanVien):
-#     __tablename__ = 'yta'
-#     # primary key
-#     maYT = Column(Integer, ForeignKey(NhanVien.maNV), primary_key=True)
-#     # relationship
-#
-#     def __str__(self):
-#         return self.name
+
+
+class YTa(NhanVien):
+    __tablename__ = 'yta'
+    # primary key
+    maYT = Column(Integer, ForeignKey(NhanVien.maNV), primary_key=True)
+    # relationship
+    danhsachkhamBenh_id = relationship('DanhSachKhamBenh', backref='yta', lazy=True)
+    def __str__(self):
+        return self.name
 
 
 class BacSi(NhanVien):
@@ -116,6 +118,19 @@ class BacSi(NhanVien):
     # primary keys
     maBS = Column(Integer, ForeignKey(NhanVien.maNV), primary_key=True)
     # foreign key
+
+    #relationships
+    phieuKhamBenh = relationship('PhieuKhamBenh', backref='bacsi', lazy=True)
+    def __str__(self):
+        return self.name
+
+
+
+class ThuNgan(NhanVien):
+    __tablename__ = 'thungan'
+    # primary key
+    thuNgan_id = Column(Integer, ForeignKey(NhanVien.maNV), primary_key=True)
+    hoadonthanhtoan = relationship('HoaDonThanhToan', backref='thungan', lazy=True)
 
     def __str__(self):
         return self.name
@@ -127,10 +142,26 @@ class BenhNhan(PersonModel, db.Model):
     # attribute
     maBN = Column(Integer, primary_key=True, autoincrement=True)
     tienSuBenh = Column(String(200), default='Không')
-    lichkhambenh = relationship('LichKhamBenh', backref='benhnhan', lazy=True)
+    lichkhambenh_id = relationship('LichKhamBenh', backref='benhnhan', lazy=True)
 
     def __str__(self):
         return self.name
+
+
+class DanhSachKhamBenh(db.Model):
+    __tablename__ = 'danhsachkhambenh'
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    soLuongBenhNhanToiDa = Column(Integer, default=40)
+    YTa_ID= Column(Integer, ForeignKey(YTa.maYT))
+
+    lichkhambenh_id = relationship('LichKhamBenh', backref='danhsachkhambenh', lazy=True)
+    bieumau = relationship('BieuMau', backref='danhsachkhambenh', lazy=True)
+    quanly = relationship('QuanLy', backref='danhsachkhambenh', lazy=True)
+
+    def __str__(self):
+        return self.name
+
+
 
 class LichKhamBenh(db.Model):
     __tablename__ = 'lichkhambenh'
@@ -140,9 +171,147 @@ class LichKhamBenh(db.Model):
     loaiDangKi = Column(Integer, nullable=False)
 
     maBN = Column(Integer, ForeignKey(BenhNhan.maBN))
+    dsKhamBenh_id=Column(Integer, ForeignKey(DanhSachKhamBenh.id))
+
+    bieumau = relationship('BieuMau', backref='lichkhambenh', lazy=True)
     def __str__(self):
         return self.name
 
+class QuyDinh(db.Model):
+    __tablename__ = 'quydinh'
+    maQD = Column(Integer, primary_key=True, autoincrement=True)
+    tenQD = Column(String(50), nullable=False)
+    noiDung = Column(String(200), nullable=False)
+
+    quanly = relationship('QuanLy', backref='quydinh', lazy=True)
+
+    def __str__(self):
+        return self.name
+
+class DonVi(db.Model):
+    __tablename__ = 'donvi'
+    maDV = Column(Integer, primary_key=True, autoincrement=True)
+    tenDV = Column(String(50), nullable=False)
+
+    thuoc = relationship('Thuoc', backref='donvi', lazy=True)
+    def __str__(self):
+        return self.name
+
+class Thuoc(db.Model):
+    __tablename__ = 'thuoc'
+    maThuoc = Column(Integer, primary_key=True, autoincrement=True)
+    tenThuoc = Column(String(50), nullable=False)
+    moTa = Column(String(250), nullable=True)
+    ngaySX=Column(DateTime, default=datetime.now(),nullable=False)
+    nhaSX= Column(String(250), nullable=False)
+    soLuong=Column(Integer,nullable=False)
+    giaTien = Column(Float, default=0)
+    image = Column(String(250),default='https://data-service.pharmacity.io/pmc-upload-media/production/pmc-ecm-core/__sized__/products/P00222_11-thumbnail-510x510-70.jpg')
+
+    # foreign key
+    maDV_id=Column(Integer, ForeignKey(DonVi.maDV))
+
+    #relationships
+    danhsachthuoc = relationship('DanhSachThuoc', backref='thuoc', lazy=True)
+    huongdansudung = relationship('HuongDanSuDung', backref='thuoc', lazy=True)
+    quanly = relationship('QuanLy', backref='thuoc', lazy=True)
+
+    def __str__(self):
+        return self.name
+
+
+class PhieuKhamBenh(db.Model):
+    __tablename__ = 'phieukhambenh'
+    maPhieuKham= Column(Integer, primary_key=True, autoincrement=True)
+    trieuChung=Column(String(250), nullable=False)
+    duDoanBenh=Column(String(100), nullable=False)
+
+    bacsi_ID=Column(Integer, ForeignKey(BacSi.maBS))
+    huongdansudung = relationship('HuongDanSuDung', backref='phieukhambenh', lazy=True)
+    hoadonthanhtoan = relationship('HoaDonThanhToan', backref='phieukhambenh', lazy=True)
+    bieumau = relationship('BieuMau', backref='phieukhambenh', lazy=True)
+    quanly = relationship('QuanLy', backref='phieukhambenh', lazy=True)
+
+    def __str__(self):
+        return self.name
+
+
+class HuongDanSuDung(db.Model):
+    __tablename__ = 'huongdansudung'
+    maThuoc_id=Column(Integer, ForeignKey(Thuoc.maThuoc),primary_key=True)
+    maPhieuKham_id=Column(Integer, ForeignKey(PhieuKhamBenh.maPhieuKham),primary_key=True)
+    lieuDung = Column(String(100), nullable=False)
+    cachDung = Column(String(250), nullable=False)
+    def __str__(self):
+        return self.name
+
+class DanhSachThuoc(db.Model):
+    __tablename__ = 'danhsachthuoc'
+    maDS = Column(Integer, primary_key=True, autoincrement=True)
+    maThuoc_id=Column(Integer, ForeignKey(Thuoc.maThuoc))
+
+    quanly = relationship('QuanLy', backref='danhsachthuoc', lazy=True)
+
+    def __str__(self):
+        return self.name
+
+class HoaDonThanhToan(db.Model):
+    __tablename__ = 'hoadonthanhtoan'
+    maHD = Column(Integer, primary_key=True, autoincrement=True)
+    tienKham=Column(Float,nullable=False)
+    tienThuoc=Column(Float,nullable=False)
+    tongTien=Column(Float,nullable=False)
+    thuNgan_id=Column(Integer, ForeignKey(ThuNgan.thuNgan_id))
+    maPhieuKham=Column(Integer, ForeignKey(PhieuKhamBenh.maPhieuKham))
+
+    bieumau = relationship('BieuMau', backref='hoadonthanhtoan', lazy=True)
+    quanly = relationship('QuanLy', backref='hoadonthanhtoan', lazy=True)
+
+    def __str__(self):
+        return self.name
+
+
+
+class BieuMau(db.Model):
+    __tablename__ = 'bieumau'
+    maBM= Column(Integer, primary_key=True, autoincrement=True)
+    tenBM=Column(String(250), nullable=False)
+    ngayKham = Column(DateTime, default=datetime.now())
+
+
+    maPhieuKham=Column(Integer, ForeignKey(PhieuKhamBenh.maPhieuKham))
+    hoaDon_id = Column(Integer, ForeignKey(HoaDonThanhToan.maHD))
+    dsKhamBenh_id = Column(Integer, ForeignKey(DanhSachKhamBenh.id))
+    lichKhamBenh = Column(Integer, ForeignKey(LichKhamBenh.id))
+
+
+    def __str__(self):
+        return self.name
+
+
+
+class QuanLy(db.Model):
+    __tablename__ = 'quanly'
+    quanLy_id= Column(Integer, primary_key=True, autoincrement=True)
+    dsThuoc_id=Column(Integer, ForeignKey(DanhSachThuoc.maDS))
+    thuoc_id = Column(Integer, ForeignKey(Thuoc.maThuoc))
+    quyDinh_id = Column(Integer, ForeignKey(QuyDinh.maQD))
+    maPhieuKham_id = Column(Integer, ForeignKey(PhieuKhamBenh.maPhieuKham))
+    hoaDon_id = Column(Integer, ForeignKey(HoaDonThanhToan.maHD))
+    danhSachKhamBenh_id = Column(Integer, ForeignKey(DanhSachKhamBenh.id))
+
+    def __str__(self):
+        return self.name
+
+
+class Admin(NhanVien):
+    __tablename__ = 'admin'
+    # primary key
+    admin_id = Column(Integer, ForeignKey(NhanVien.maNV), primary_key=True)
+    quanLy_id = Column(Integer, ForeignKey(QuanLy.quanLy_id),primary_key=True)
+
+    def __str__(self):
+        return self.name
 
 
 
