@@ -60,6 +60,11 @@ def add_benh_nhan():
         return render_template("BenhNhan.html", err_msg=err_msg,success_message=success_message)
     return render_template("BenhNhan.html", err_msg=err_msg,success_message=success_message)
 
+
+@app.route('/thanhtoan',methods=['post', 'get'])
+def dangkionline():
+    return render_template("thungan.html")
+
 @app.route("/products/<id>")
 def details(id):
     return render_template('details.html', id=id)
@@ -181,6 +186,12 @@ def pay():
 @app.route('/cart')
 def cart_list():
     return render_template('cart.html')
+
+
+
+@app.route("/testhtml")
+def index1():
+    return render_template("testhtml.html")
 
 
 

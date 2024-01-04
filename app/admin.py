@@ -166,6 +166,16 @@ class MyThuocView(AuthenticatedAdmin):
     can_export = True
 
 
+class MyThuNganView(BaseView):
+    column_display_pk = True
+    column_list = ['maNV', 'hoTen', 'maCCCD','user','user_id']
+    column_searchable_list = ['hoTen']
+    column_filters = ['maNV', 'hoTen', 'maCCCD']
+    can_export = True
+    can_view_details = True
+
+
+
 admin.add_view(MyDanhSachKhamBenhView(DanhSachKhamBenh, db.session,name='Danh Sách Khám Bệnh'))
 admin.add_view(MyBenhNhanView(BenhNhan, db.session, name='bệnh nhân'))
 admin.add_view(MyThuocView(Thuoc, db.session, name='Thuốc'))

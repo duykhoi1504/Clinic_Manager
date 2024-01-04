@@ -1,0 +1,14 @@
+    <div class="row">
+        {% for p in nhanviens %}
+        <div class="col-xs-12 col-md-3" style="padding:8px">
+            <div class="card">
+                <img class="card-img-top" src="{{ p.avatar }}" alt="Card image">
+                <div class="card-body text-center">
+                    <h4 class="card-title ">{{ p.hoTen }}</h4>
+                    <p class="card-text">{{ p.diaChi }}</p>
+                    <a href="/products/{{p.id}}" class="btn btn-primary ">xem chi tiết</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>

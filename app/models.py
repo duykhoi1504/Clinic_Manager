@@ -107,7 +107,7 @@ class YTa(NhanVien):
     # primary key
     maYT = Column(Integer, ForeignKey(NhanVien.maNV), primary_key=True)
     # relationship
-    danhsachkhamBenh_id = relationship('DanhSachKhamBenh', backref='yta', lazy=True)
+    danhsachkhamBenh_id = relationship('DanhSachKhamBenh', backref='thungan', lazy=True)
     def __str__(self):
         return self.name
 
@@ -340,8 +340,8 @@ if __name__=="__main__":
         #     username='voduykhoi',
         #     password=str(hashlib.md5('123456'.encode('utf-8')).hexdigest()),
         #     user_role=UserRoleEnum.USER )
-        # u4 = User(name='yta',
-        #     username='yta',
+        # u4 = User(name='thungan',
+        #     username='thungan',
         #     password=str(hashlib.md5('123456'.encode('utf-8')).hexdigest()),
         #     user_role=UserRoleEnum.YTA )
         # u5 = User(name='thungan',
@@ -403,6 +403,75 @@ if __name__=="__main__":
         #
         # db.session.add_all([d1, d2, d3, d4])
         # db.session.commit()
+        ## #########################
+        #values thungan
+        # yta1 = YTa(
+        #     hoTen="Nguyễn Văn Y ",
+        #     ngaySinh=datetime(2003, 1, 1),
+        #     maCCCD="123456789016",
+        #     diaChi="123 Đường Chính",
+        #     email="yta1@example.com",
+        #     soDienThoai="1234567890",
+        #     sex=Sex.MALE,
+        #     ngayVaoLam=datetime(2017, 4, 20),
+        #     avatar="https://res.cloudinary.com/dx9eo8pyh/image/upload/v1704361418/yta_qwimqb.png",
+        #
+        # )
+        #
+        # yta2 = YTa(
+        #     hoTen="Trần Thị Mỹ",
+        #     ngaySinh=datetime(2003, 2, 1),
+        #     maCCCD="987654321017",
+        #     diaChi="456 Đường Sồi",
+        #     email="yta2@example.com",
+        #     soDienThoai="0987654321",
+        #     sex=Sex.FEMALE,
+        #     ngayVaoLam=datetime(2018, 5, 25),
+        #     avatar="https://res.cloudinary.com/dx9eo8pyh/image/upload/v1704361418/yta_qwimqb.png",
+        #
+        # )
+        #
+        # yta3 = YTa(
+        #     hoTen="Lê Văn Sĩ",
+        #     ngaySinh=datetime(2003, 3, 1),
+        #     maCCCD="111222333444",
+        #     diaChi="789 Đường Thông",
+        #     email="yta3@example.com",
+        #     soDienThoai="5556667777",
+        #     sex=Sex.MALE,
+        #     ngayVaoLam=datetime(2019, 8, 13),
+        #     avatar="https://res.cloudinary.com/dx9eo8pyh/image/upload/v1704361418/yta_qwimqb.png",
+        #
+        # )
+        #
+        # yta4 = YTa(
+        #     hoTen="Phạm Thị Nơ",
+        #     ngaySinh=datetime(2003, 4, 1),
+        #     maCCCD="555666777888",
+        #     diaChi="987 Đường Phố",
+        #     email="yta4@example.com",
+        #     soDienThoai="4443332222",
+        #     sex=Sex.FEMALE,
+        #     ngayVaoLam=datetime(2015, 6, 10),
+        #     avatar="https://res.cloudinary.com/dx9eo8pyh/image/upload/v1704361418/yta_qwimqb.png",
+        #
+        # )
+        #
+        # yta5 = YTa(
+        #     hoTen="Võ Văn Kiệt",
+        #     ngaySinh=datetime(2003, 7, 1),
+        #     maCCCD="999888777666",
+        #     diaChi="654 Đường Cây",
+        #     email="yta5@example.com",
+        #     soDienThoai="1112223333",
+        #     sex=Sex.MALE,
+        #     ngayVaoLam=datetime(2015, 3, 15),
+        #     avatar="https://res.cloudinary.com/dx9eo8pyh/image/upload/v1704361418/yta_qwimqb.png",
+        #
+        # )
+        # db.session.add_all([yta1,yta2,yta3,yta4,yta5])
+        # db.session.commit()
+        #Values Yta
       #########################
         # c1 = Category(name="Iphone")
         # c2 = Category(name="tablet")
