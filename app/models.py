@@ -58,7 +58,8 @@ class Product(db.Model):
     image = Column(String(100))
     Category_ID = Column(Integer, ForeignKey(Category.id), nullable=False)
     receipt_details = relationship('ReceiptDetails', backref='product', lazy=True)
-
+    def __str__(self):
+        return self.name
 
 
 class Receipt(BaseModel):
@@ -94,7 +95,6 @@ class NhanVien(PersonModel, db.Model):
     ngayVaoLam = Column(DateTime, default=datetime.now())
     # ChuyenNganh = Column(String(50))
     avatar =Column(String(250), default='https://th.bing.com/th/id/OIP.48Pj-NVeziMTgdX6rHGpKAHaI1?w=162&h=194&c=7&r=0&o=5&dpr=1.1&pid=1.7')
-
     user_id = Column(Integer, ForeignKey(User.id))
     def __str__(self):
         return self.name
@@ -168,7 +168,7 @@ class LichKhamBenh(db.Model):
 
     # attribute
     id = Column(Integer, primary_key=True, autoincrement=True)
-    loaiDangKi = Column(Integer, nullable=False)
+
 
     maBN = Column(Integer, ForeignKey(BenhNhan.maBN))
     dsKhamBenh_id=Column(Integer, ForeignKey(DanhSachKhamBenh.id))
@@ -340,8 +340,17 @@ if __name__=="__main__":
         #     username='voduykhoi',
         #     password=str(hashlib.md5('123456'.encode('utf-8')).hexdigest()),
         #     user_role=UserRoleEnum.USER )
-        # db.session.add_all([u1,u2,u3])
-        # db.session.commit()
+        # u4 = User(name='yta',
+        #     username='yta',
+        #     password=str(hashlib.md5('123456'.encode('utf-8')).hexdigest()),
+        #     user_role=UserRoleEnum.YTA )
+        # u5 = User(name='thungan',
+        #           username='thungan',
+        #           password=str(hashlib.md5('123456'.encode('utf-8')).hexdigest()),
+        #           user_role=UserRoleEnum.THUNGAN)
+        # db.session.add_all([u1,u2,u3,u4,u5])
+
+        #db.session.commit()
         #######################
         # d1 = BacSi(
         #     hoTen="Nguyễn Thị Thu Hồng",
