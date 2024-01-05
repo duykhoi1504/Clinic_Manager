@@ -80,8 +80,8 @@ class MyStatsView(BaseView):
     def index(self):
         if not self.is_accessible():
             return redirect(url_for('admin.index'))
-        return self.render('admin/stats.html',role=current_user.user_role,
-                                                        UserRoleEnum=UserRoleEnum,
+        return self.render('admin/stats.html',role=current_user.user_role ,
+                                                         UserRoleEnum=UserRoleEnum,
                                                         stats=dao.count_products_by_cate())
     def is_accessible(self):
         # Kiểm tra nếu người dùng là admin

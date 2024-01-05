@@ -4,9 +4,9 @@ from flask import render_template, request, redirect, session, jsonify,flash
 import dao, utils
 from app import app, login
 from flask_login import login_user, logout_user
-from app.models import NhanVien
+from app.models import NhanVien,UserRoleEnum
 from datetime import datetime
-
+from app.admin import current_user
 
 @app.route("/")
 def index():
@@ -30,8 +30,11 @@ def index():
     total = dao.count_product()
 
     return render_template("index.html",
-                           products=products,nhanviens=nhanviens,image_data=image_data,
-                           pages=math.ceil(total / app.config['PAGE_SIZE']))
+                           products=products,nhanviens=nhanviens,
+                           image_data=image_data,
+                           pages=math.ceil(total / app.config['PAGE_SIZE']),
+                           role=current_user.user_role if current_user.is_authenticated else None,
+                           )
 
 
 @app.route("/datlichkham",methods=['post', 'get'])
@@ -67,7 +70,7 @@ def add_benh_nhan():
 def thanhtoan():
     return render_template("thungan.html")
 
-@app.route('/dangkionline',methods=['post', 'get'])
+@app.route('/dangkikhamtructiep',methods=['post', 'get'])
 def dangkionline():
     return render_template("yta.html")
 
@@ -75,6 +78,9 @@ def dangkionline():
 def lapphieukham():
     return render_template("bacsi.html")
 
+@app.route('/aboutus')
+def aboutus():
+    return render_template("about_us.html")
 
 
 @app.route("/nhanvien/<id>")
@@ -216,7 +222,8 @@ def index1():
 def common_resp():
     return{
         'caregories': dao.load_categories(),
-        'cart': utils.count_cart(session.get('cart'))
+        'cart': utils.count_cart(session.get('cart')),
+        'UserRoleEnum':UserRoleEnum
     }
 
 
