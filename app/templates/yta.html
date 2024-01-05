@@ -2,7 +2,16 @@
 {% block title %} Gio hang {% endblock %}
 
 {% block content %}
-
+<!-- MAKE AN APPOINTMENT -->
+{% if err_msg %}
+<div class="alert alert-danger">
+    {{ err_msg }}
+</div>
+{% elif success_message %}
+<div class="alert alert-info">
+    {{ success_message }}
+</div>
+{% endif %}
 <div class="container mt-4">
 
     <div class="row">

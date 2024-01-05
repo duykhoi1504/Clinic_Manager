@@ -65,14 +65,38 @@ def add_benh_nhan():
         return render_template("BenhNhan.html", err_msg=err_msg,success_message=success_message)
     return render_template("BenhNhan.html", err_msg=err_msg,success_message=success_message)
 
-#test
 @app.route('/thanhtoan',methods=['post', 'get'])
 def thanhtoan():
     return render_template("thungan.html")
 
 @app.route('/dangkikhamtructiep',methods=['post', 'get'])
 def dangkionline():
-    return render_template("yta.html")
+    err_msg = ""
+    success_message = ""
+    if request.method.__eq__('POST'):
+        hoTen = request.form.get('hoTen')
+        ngaySinh = request.form.get('ngaySinh')
+        maCCCD = request.form.get('maCCCD')
+        diaChi = request.form.get('diaChi')
+        email = request.form.get('email')
+        soDienThoai = request.form.get('soDienThoai')
+        tienSuBenh = request.form.get('tienSuBenh')
+        sex = request.form.get('sex')
+
+        if not all([hoTen, ngaySinh, maCCCD, diaChi, email, soDienThoai, tienSuBenh, sex]):
+            err_msg = "Please fill in all required fields."
+            return render_template("yta.html", err_msg=err_msg)
+        try:
+            dao.add_benhnhan(hoTen=hoTen, ngaySinh=ngaySinh, maCCCD=maCCCD, diaChi=diaChi, email=email,
+                             soDienThoai=soDienThoai, tienSuBenh=tienSuBenh, sex=sex)
+            success_message = "BenhNhan added successfully!"
+            err_msg = ""
+        except:
+            success_message = ""
+            err_msg = "he thong dang loi!"
+
+        return render_template("yta.html", err_msg=err_msg, success_message=success_message)
+    return render_template("yta.html", err_msg=err_msg, success_message=success_message)
 
 @app.route('/lapphieukham',methods=['post', 'get'])
 def lapphieukham():
