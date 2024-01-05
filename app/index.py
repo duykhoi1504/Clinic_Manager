@@ -4,6 +4,8 @@ from flask import render_template, request, redirect, session, jsonify,flash
 import dao, utils
 from app import app, login
 from flask_login import login_user, logout_user
+from app.models import NhanVien
+from datetime import datetime
 
 
 @app.route("/")
@@ -32,7 +34,7 @@ def index():
                            pages=math.ceil(total / app.config['PAGE_SIZE']))
 
 
-@app.route("/addBenhNhan",methods=['post', 'get'])
+@app.route("/datlichkham",methods=['post', 'get'])
 def add_benh_nhan():
     err_msg = ""
     success_message = ""
@@ -60,18 +62,30 @@ def add_benh_nhan():
         return render_template("BenhNhan.html", err_msg=err_msg,success_message=success_message)
     return render_template("BenhNhan.html", err_msg=err_msg,success_message=success_message)
 
-
+#test
 @app.route('/thanhtoan',methods=['post', 'get'])
-def dangkionline():
+def thanhtoan():
     return render_template("thungan.html")
 
-@app.route("/products/<id>")
+@app.route('/dangkionline',methods=['post', 'get'])
+def dangkionline():
+    return render_template("yta.html")
+
+@app.route('/lapphieukham',methods=['post', 'get'])
+def lapphieukham():
+    return render_template("bacsi.html")
+
+
+
+@app.route("/nhanvien/<id>")
 def details(id):
-    return render_template('details.html', id=id)
+    nhanvien = NhanVien.query.get(id)
+    return render_template('details.html', nhanvien=nhanvien,datetime=datetime)
 
 
 @app.route('/login',methods=['post', 'get'])
 def login_user_process():
+    isCorrect = True;
     if request.method.__eq__('POST'):
         username = request.form.get('username')
         password = request.form.get('password')
@@ -79,10 +93,12 @@ def login_user_process():
         user = dao.auth_user(username=username, password=password)
         if user:
             login_user(user=user)
-
+        else:
+            isCorrect = False;
+            return render_template('login.html',isCorrect=isCorrect)
         next = request.args.get('next')
         return  redirect('/' if next is None else next)
-    return render_template('login.html')
+    return render_template('login.html',isCorrect=isCorrect)
 
 
 @app.route('/logout')

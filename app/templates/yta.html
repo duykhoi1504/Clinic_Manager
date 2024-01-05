@@ -2,7 +2,15 @@
 {% block title %} Gio hang {% endblock %}
 
 {% block content %}
-<div class="row" id="bill_detail">
-<h1>trang  y ta</h1>
+
+<div class="container mt-4">
+
+    <div class="row">
+        <!-- Left Column - Form -->
+   {% include 'layout/yta/yta_dangkikhamtructiep.html' %}
+
+        <!-- Right Column - Slider -->
+   {% include 'layout/yta/yta_danhsachbenhnhan.html' %}
+    </div>
 </div>
 {% endblock %}

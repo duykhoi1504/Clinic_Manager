@@ -2,82 +2,59 @@
 {% block title %} Gio hang {% endblock %}
 
 {% block content %}
+<div class="container" style="margin:90px">
 
-<div class="container mt-4">
-    
     <div class="row">
-        <!-- Left Column - Form -->
         <div class="col-4">
             <div class="card">
                 <div class="card-header">
-                    <h5 class="card-title">Form Nhập Thông Tin</h5>
+                    <h5 class="card-title">Form tạo phiếu khám</h5>
                 </div>
                 <div class="card-body">
                     <!-- Your form goes here -->
+                    <div style="margin-bottom:12px">
+                        <label>Tên bác sĩ: <span class="badge bg-primary">Name</span>
+                        </label>
+                    </div>
                     <form>
-                        <!--HO VA TEN -->
-                        <div class="mb-3">
-                            <label class="form-label">Họ và tên</label>
-                            <input type="email" class="form-control" placeholder="nhập tên...">
-                        </div>
-
                         <!--CCCD -->
                         <div class="mb-3">
                             <label class="form-label">CCDD</label>
                             <input type="number" class="form-control" placeholder="nhập mã căn cước công dân...">
                         </div>
-
-                        <!--EMAIL -->
+                        <!--TRIEU_CHUNG -->
                         <div class="mb-3">
-                            <label class="form-label">Email address</label>
-                            <input type="email" class="form-control" placeholder="name@example.com">
+                            <label class="form-label">Triệu chứng</label>
+                            <textarea class="form-control" rows="3"  name="tienSuBenh"
+                                      placeholder="Triệu chứng"></textarea></div>
+
+                        <!--BENH_CHUAN_DOAN -->
+
+                        <div class="mb-3">
+                            <label class="form-label">Bệnh chuẩn đoán</label>
+                            <textarea class="form-control" rows="3"  name="tienSuBenh"
+                                      placeholder="Bệnh chuẩn đoán"></textarea>
                         </div>
 
-                        <!--DIACHI -->
-                        <div class="mb-3">
-                            <label class="form-label">Địa chỉ</label>
-                            <input type="email" class="form-control" placeholder="nhập địa chỉ">
-                        </div>
-
-                        <!--Ngày sinh -->
-                        <div class="mb-3">
-                            <label class="form-label">Ngày sinh</label>
-                            <input type="date" name="ngaySinh" value="" class="form-control">
-                        </div>
-
-                        <!--Giới tính -->
-                        <div class="mb-3">
-                            <label class="form-label">Ngày sinh</label>
-                            <select class="form-control" name="sex">
-                                <option>MALE</option>
-                                <option>FEMALE</option>
-                            </select>
-                        </div>
-
-                        <!--SDT -->
-                        <div class="mb-3">
-                            <label class="form-label">Ngày sinh</label>
-                            <input type="number" name="ngaySinh" value="" class="form-control">
-                        </div>
-
-                         <!--TIENSUBENH -->
-                        <div class="mb-3">
-                            <label class="form-label">Tiền sử bệnh</label>
-                            <textarea class="form-control" rows="5" id="message" name="tienSuBenh"
-                                  placeholder="Tiền sử bệnh"></textarea>
-                        </div>
                         <!-- Add more form fields as needed -->
-                        <button type="submit" class="btn btn-primary">Submit</button>
+                        <!--                        <button type="submit" class="btn btn-primary">Submit</button>-->
+                        <!-- Button trigger modal -->
+                        <button type="button" style="margin-top:12px" class="btn btn-primary" data-bs-toggle="modal"
+                                data-bs-target="#staticBackdrop">
+                            Xác nhận
+                        </button>
+
+                        <!-- Modal -->
+                        {% include 'layout/submit.html' %}
                     </form>
                 </div>
             </div>
         </div>
-
-        <!-- Right Column - Slider -->
+        <!---->
         <div class="card col-8">
             <div class="card-header">
-                <div class="card-title">Danh sách thuốc</div>
-                <div class="card-category">Thông tin thuốc được liệt kê từ bác sỹ</div>
+                <div class="card-title">Danh sách thuốc cần dùng</div>
+
             </div>
             <div class="card-body">
                 <div class="table-responsive">
@@ -88,8 +65,8 @@
                             <th>Tên thuốc</th>
                             <th>Đơn vị</th>
                             <th>Số lượng</th>
-                            <th>Đơn giá</th>
-                            <th>Tổng tiền</th>
+                            <th>Cách dùng</th>
+
                         </tr>
                         </thead>
                         <tbody id="medicine_list_datas">
@@ -100,7 +77,7 @@
                             <td>3</td>
                             <td>4</td>
                             <td>5</td>
-                            <td>6</td>
+
                         </tr>
 
                         </tbody>
@@ -108,6 +85,7 @@
                 </div>
             </div>
         </div>
+
     </div>
 </div>
 {% endblock %}
