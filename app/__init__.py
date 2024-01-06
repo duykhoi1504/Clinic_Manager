@@ -23,5 +23,19 @@ cloudinary.config(
     api_secret="w339Gv4z_NcM7gvOPmiq5QloAB0"
 )
 
+##############INIT VALUES DATABASE###########
+
+# from models import QuyDinh
+#
+# def initValuesForTable():
+#     try:
+#         #ADD QUY DINH
+#         quydinh1 = QuyDinh(tenQD='Quy định 1', noiDung='Nội dung quy định 1')
+#         quydinh2 = QuyDinh(tenQD='Quy định 2', noiDung='Nội dung quy định 2')
+#         db.session.add_all([quydinh1,quydinh2])
+#     except:
+#         db.session.rollback()
+#
+
 
 

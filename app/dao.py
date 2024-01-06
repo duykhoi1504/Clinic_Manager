@@ -25,7 +25,7 @@ def load_products(kw=None,page=None):
 def load_nhanviens(kw=None,page=None):
     nhanviens = NhanVien.query
     if kw:
-        nhanviens = nhanviens.filter(Product.name.contains((kw)))
+        nhanviens = nhanviens.filter(NhanVien.hoTen.contains((kw)))
 
     if page:
         page = int(page)

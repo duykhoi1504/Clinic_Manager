@@ -348,9 +348,12 @@ if __name__=="__main__":
         #           username='thungan',
         #           password=str(hashlib.md5('123456'.encode('utf-8')).hexdigest()),
         #           user_role=UserRoleEnum.THUNGAN)
-        # db.session.add_all([u1,u2,u3,u4,u5])
-
-        #db.session.commit()
+        # u6 = User(name='yta2',
+        #           username='yta2',
+        #           password=str(hashlib.md5('123456'.encode('utf-8')).hexdigest()),
+        #           user_role=UserRoleEnum.YTA)
+        # db.session.add_all([u1,u2,u3,u4,u5,u6])
+        # db.session.commit()
         #######################
         # d1 = BacSi(
         #     hoTen="Nguyễn Thị Thu Hồng",

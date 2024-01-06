@@ -16,6 +16,7 @@ def index():
     products=dao.load_products(kw=kw,page=page)
     nhanviens=dao.load_nhanviens(kw=kw,page=page)
 
+
     image_data = [
         {'url': 'https://hoanmy.com/wp-content/uploads/2023/12/dai-thao-duong.png', 'title': 'Những biến chứng nguy hiểm của đái tháo đường và cách phòng ngừa',
          'content': 'Thời gian gần đây, tỷ lệ người bệnh đái tháo đường đang gia tăng khá cao. Theo số liệu từ Hiệp hội Đái tháo đường Thế giới (International Diabetes Federation – IDF), vào năm 2019, thế giới có khoảng 463 triệu người mắc bệnh đái tháo đường. Trong số đó, ước tính hơn 4 triệu […]'},
@@ -33,8 +34,7 @@ def index():
                            products=products,nhanviens=nhanviens,
                            image_data=image_data,
                            pages=math.ceil(total / app.config['PAGE_SIZE']),
-                           role=current_user.user_role if current_user.is_authenticated else None,
-                           )
+                           role=current_user.user_role if current_user.is_authenticated else None,)
 
 
 @app.route("/datlichkham",methods=['post', 'get'])
@@ -105,6 +105,12 @@ def lapphieukham():
 @app.route('/aboutus')
 def aboutus():
     return render_template("about_us.html")
+
+
+@app.route('/doingu')
+def doingu():
+    return render_template("client_doingu.html")
+
 
 
 @app.route("/nhanvien/<id>")
@@ -240,14 +246,14 @@ def index1():
     return render_template("testhtml.html")
 
 
-
-
 @app.context_processor#trang nao cung se co du lieu nay`
 def common_resp():
+    role = current_user.user_role if current_user.is_authenticated else None
     return{
         'caregories': dao.load_categories(),
         'cart': utils.count_cart(session.get('cart')),
-        'UserRoleEnum':UserRoleEnum
+        'UserRoleEnum':UserRoleEnum,
+        'role':role
     }
 
 

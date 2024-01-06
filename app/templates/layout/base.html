@@ -14,10 +14,13 @@
 
     <link rel="stylesheet" href="https://unpkg.com/bootstrap@5.3.2/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://unpkg.com/bs-brain@2.0.3/components/heroes/hero-5/assets/css/hero-5.css">
+<!--    -->
+
+<!--    -->
 </head>
 <body>
 {% include 'layout/header.html' %}
-<div style="margin-top:70px"></div>
+<div style="margin-top:20px"></div>
 {% block content %} {% endblock %}
 {% include 'layout/footer.html' %}
 <script src="{{ url_for('static', filename='js/cart.js') }}"></script>
