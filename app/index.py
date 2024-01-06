@@ -1,10 +1,10 @@
 import math
 
-from flask import render_template, request, redirect, session, jsonify,flash
+from flask import render_template, request, redirect, session, jsonify,flash,url_for
 import dao, utils
-from app import app, login
+from app import app, login,db
 from flask_login import login_user, logout_user
-from app.models import NhanVien,UserRoleEnum
+from app.models import NhanVien,UserRoleEnum,BenhNhan
 from datetime import datetime
 from app.admin import current_user
 
@@ -69,11 +69,17 @@ def add_benh_nhan():
 def thanhtoan():
     return render_template("thungan.html")
 
+
+
+#------------------ DANGKIKHAMTRUCTIEP----------------------
+
 @app.route('/dangkikhamtructiep',methods=['post', 'get'])
-def dangkionline():
+def dangkitructiep():
     err_msg = ""
     success_message = ""
-    if request.method.__eq__('POST'):
+    benhnhans=dao.load_benhnhans()
+
+    if request.method==('POST'):
         hoTen = request.form.get('hoTen')
         ngaySinh = request.form.get('ngaySinh')
         maCCCD = request.form.get('maCCCD')
@@ -85,7 +91,8 @@ def dangkionline():
 
         if not all([hoTen, ngaySinh, maCCCD, diaChi, email, soDienThoai, tienSuBenh, sex]):
             err_msg = "Please fill in all required fields."
-            return render_template("yta.html", err_msg=err_msg)
+            session['err_msg'] = err_msg
+            return render_template("yta.html",benhnhans=benhnhans, err_msg=err_msg)
         try:
             dao.add_benhnhan(hoTen=hoTen, ngaySinh=ngaySinh, maCCCD=maCCCD, diaChi=diaChi, email=email,
                              soDienThoai=soDienThoai, tienSuBenh=tienSuBenh, sex=sex)
@@ -94,12 +101,23 @@ def dangkionline():
         except:
             success_message = ""
             err_msg = "he thong dang loi!"
+        session.pop('err_msg', None)
+        return redirect(url_for('dangkionline'))
+    return render_template("yta.html", benhnhans=benhnhans, err_msg=err_msg, success_message=success_message)
 
-        return render_template("yta.html", err_msg=err_msg, success_message=success_message)
-    return render_template("yta.html", err_msg=err_msg, success_message=success_message)
+
+
+# @app.route('/dangkikhamtructiep/<id>', methods=['POST'])
+# def delete_benhnhan(id):
+#     benhnhan = BenhNhan.query.get(id)
+#     db.session.delete(benhnhan)
+#     db.session.commit()
+#
+#     return jsonify({'status': 'success'})
 
 @app.route('/lapphieukham',methods=['post', 'get'])
 def lapphieukham():
+
     return render_template("bacsi.html")
 
 @app.route('/aboutus')

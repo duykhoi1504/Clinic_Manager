@@ -1,54 +1,60 @@
-#Tác động tới CSDL
-from sqlalchemy import Column, Integer, String,Boolean, Float, ForeignKey, Enum, DateTime
+# Tác động tới CSDL
+from sqlalchemy import Column, Integer, String, Boolean, Float, ForeignKey, Enum, DateTime
 from sqlalchemy.orm import relationship, backref
 from app import db
 from flask_login import UserMixin
 import enum
 from datetime import datetime
 
+
 class UserRoleEnum(enum.Enum):
-    USER=1
-    ADMIN=2
-    BACSI=3
-    YTA=4
-    THUNGAN=5
+    USER = 1
+    ADMIN = 2
+    BACSI = 3
+    YTA = 4
+    THUNGAN = 5
+
 
 class Sex(enum.Enum):
     MALE = 0,
     FEMALE = 1
 
 
-#UserMixin để nó hiều đây là model dùng để chứng thực-> vì Python da kế thừa
+# UserMixin để nó hiều đây là model dùng để chứng thực-> vì Python da kế thừa
 class User(db.Model, UserMixin):
     id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String(50), nullable=False)
     username = Column(String(50), nullable=False, unique=True)
     password = Column(String(100), nullable=False)
-    avatar = Column(String(100), default='https://th.bing.com/th/id/OIP.48Pj-NVeziMTgdX6rHGpKAHaI1?w=162&h=194&c=7&r=0&o=5&dpr=1.1&pid=1.7')
-    user_role = Column(Enum(UserRoleEnum),default=UserRoleEnum.USER)
+    avatar = Column(String(100),
+                    default='https://th.bing.com/th/id/OIP.48Pj-NVeziMTgdX6rHGpKAHaI1?w=162&h=194&c=7&r=0&o=5&dpr=1.1&pid=1.7')
+    user_role = Column(Enum(UserRoleEnum), default=UserRoleEnum.USER)
 
-    nhanvien = relationship('NhanVien', backref='user' , lazy=True)
+    nhanvien = relationship('NhanVien', backref='user', lazy=True)
 
-    receipts = relationship('Receipt',backref='user',lazy=True)
+    receipts = relationship('Receipt', backref='user', lazy=True)
+
     def __str__(self):
         return self.name
 
-class BaseModel (db.Model):
+
+class BaseModel(db.Model):
     __abstract__ = True
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     created_date = Column(DateTime, default=datetime.now())
     active = Column(Boolean, default=True)
 
+
 class Category(db.Model):
     __tablename__ = 'category'
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    name = Column(String(50), nullable=False,unique=True)
+    name = Column(String(50), nullable=False, unique=True)
     products = relationship('Product', backref='category', lazy=True)
 
     def __str__(self):
-        return  self.name
+        return self.name
 
 
 class Product(db.Model):
@@ -58,6 +64,7 @@ class Product(db.Model):
     image = Column(String(100))
     Category_ID = Column(Integer, ForeignKey(Category.id), nullable=False)
     receipt_details = relationship('ReceiptDetails', backref='product', lazy=True)
+
     def __str__(self):
         return self.name
 
@@ -72,6 +79,8 @@ class ReceiptDetails(BaseModel):
     price = Column(Float, default=0)
     receipt_id = Column(Integer, ForeignKey(Receipt.id), nullable=False)
     product_id = Column(Integer, ForeignKey(Product.id), nullable=False)
+
+
 # -----------------------------------------------------------------------
 
 
@@ -94,12 +103,12 @@ class NhanVien(PersonModel, db.Model):
     # attributes
     ngayVaoLam = Column(DateTime, default=datetime.now())
     # ChuyenNganh = Column(String(50))
-    avatar =Column(String(250), default='https://th.bing.com/th/id/OIP.48Pj-NVeziMTgdX6rHGpKAHaI1?w=162&h=194&c=7&r=0&o=5&dpr=1.1&pid=1.7')
+    avatar = Column(String(250),
+                    default='https://th.bing.com/th/id/OIP.48Pj-NVeziMTgdX6rHGpKAHaI1?w=162&h=194&c=7&r=0&o=5&dpr=1.1&pid=1.7')
     user_id = Column(Integer, ForeignKey(User.id))
+
     def __str__(self):
         return self.name
-
-
 
 
 class YTa(NhanVien):
@@ -108,6 +117,7 @@ class YTa(NhanVien):
     maYT = Column(Integer, ForeignKey(NhanVien.maNV), primary_key=True)
     # relationship
     danhsachkhamBenh_id = relationship('DanhSachKhamBenh', backref='thungan', lazy=True)
+
     def __str__(self):
         return self.name
 
@@ -119,11 +129,11 @@ class BacSi(NhanVien):
     maBS = Column(Integer, ForeignKey(NhanVien.maNV), primary_key=True)
     # foreign key
 
-    #relationships
+    # relationships
     phieuKhamBenh = relationship('PhieuKhamBenh', backref='bacsi', lazy=True)
+
     def __str__(self):
         return self.name
-
 
 
 class ThuNgan(NhanVien):
@@ -152,7 +162,7 @@ class DanhSachKhamBenh(db.Model):
     __tablename__ = 'danhsachkhambenh'
     id = Column(Integer, primary_key=True, autoincrement=True)
     soLuongBenhNhanToiDa = Column(Integer, default=40)
-    YTa_ID= Column(Integer, ForeignKey(YTa.maYT))
+    YTa_ID = Column(Integer, ForeignKey(YTa.maYT))
 
     lichkhambenh_id = relationship('LichKhamBenh', backref='danhsachkhambenh', lazy=True)
     bieumau = relationship('BieuMau', backref='danhsachkhambenh', lazy=True)
@@ -162,20 +172,20 @@ class DanhSachKhamBenh(db.Model):
         return self.name
 
 
-
 class LichKhamBenh(db.Model):
     __tablename__ = 'lichkhambenh'
 
     # attribute
     id = Column(Integer, primary_key=True, autoincrement=True)
 
-
     maBN = Column(Integer, ForeignKey(BenhNhan.maBN))
-    dsKhamBenh_id=Column(Integer, ForeignKey(DanhSachKhamBenh.id))
+    dsKhamBenh_id = Column(Integer, ForeignKey(DanhSachKhamBenh.id))
 
     bieumau = relationship('BieuMau', backref='lichkhambenh', lazy=True)
+
     def __str__(self):
         return self.name
+
 
 class QuyDinh(db.Model):
     __tablename__ = 'quydinh'
@@ -188,33 +198,36 @@ class QuyDinh(db.Model):
     def __str__(self):
         return self.name
 
+
 class DonVi(db.Model):
     __tablename__ = 'donvi'
     maDV = Column(Integer, primary_key=True, autoincrement=True)
     tenDV = Column(String(50), nullable=False)
 
     thuoc = relationship('Thuoc', backref='donvi', lazy=True)
+
     def __str__(self):
         return self.name
+
 
 class Thuoc(db.Model):
     __tablename__ = 'thuoc'
     maThuoc = Column(Integer, primary_key=True, autoincrement=True)
     tenThuoc = Column(String(50), nullable=False)
     moTa = Column(String(250), nullable=True)
-    ngaySX=Column(DateTime, default=datetime.now(),nullable=False)
-    nhaSX= Column(String(250), nullable=False)
-    soLuong=Column(Integer,nullable=False)
+    ngaySX = Column(DateTime, default=datetime.now(), nullable=False)
+    nhaSX = Column(String(250), nullable=False)
+    soLuong = Column(Integer, nullable=False)
     giaTien = Column(Float, default=0)
-    image = Column(String(250),default='https://data-service.pharmacity.io/pmc-upload-media/production/pmc-ecm-core/__sized__/products/P00222_11-thumbnail-510x510-70.jpg')
+    image = Column(String(250),
+                   default='https://data-service.pharmacity.io/pmc-upload-media/production/pmc-ecm-core/__sized__/products/P00222_11-thumbnail-510x510-70.jpg')
 
     # foreign key
-    maDV_id=Column(Integer, ForeignKey(DonVi.maDV))
+    maDV_id = Column(Integer, ForeignKey(DonVi.maDV))
 
-    #relationships
+    # relationships
     danhsachthuoc = relationship('DanhSachThuoc', backref='thuoc', lazy=True)
     huongdansudung = relationship('HuongDanSuDung', backref='thuoc', lazy=True)
-    quanly = relationship('QuanLy', backref='thuoc', lazy=True)
 
     def __str__(self):
         return self.name
@@ -222,11 +235,11 @@ class Thuoc(db.Model):
 
 class PhieuKhamBenh(db.Model):
     __tablename__ = 'phieukhambenh'
-    maPhieuKham= Column(Integer, primary_key=True, autoincrement=True)
-    trieuChung=Column(String(250), nullable=False)
-    duDoanBenh=Column(String(100), nullable=False)
+    maPhieuKham = Column(Integer, primary_key=True, autoincrement=True)
+    trieuChung = Column(String(250), nullable=False)
+    duDoanBenh = Column(String(100), nullable=False)
 
-    bacsi_ID=Column(Integer, ForeignKey(BacSi.maBS))
+    bacsi_ID = Column(Integer, ForeignKey(BacSi.maBS))
     huongdansudung = relationship('HuongDanSuDung', backref='phieukhambenh', lazy=True)
     hoadonthanhtoan = relationship('HoaDonThanhToan', backref='phieukhambenh', lazy=True)
     bieumau = relationship('BieuMau', backref='phieukhambenh', lazy=True)
@@ -238,31 +251,34 @@ class PhieuKhamBenh(db.Model):
 
 class HuongDanSuDung(db.Model):
     __tablename__ = 'huongdansudung'
-    maThuoc_id=Column(Integer, ForeignKey(Thuoc.maThuoc),primary_key=True)
-    maPhieuKham_id=Column(Integer, ForeignKey(PhieuKhamBenh.maPhieuKham),primary_key=True)
+    maThuoc_id = Column(Integer, ForeignKey(Thuoc.maThuoc), primary_key=True)
+    maPhieuKham_id = Column(Integer, ForeignKey(PhieuKhamBenh.maPhieuKham), primary_key=True)
     lieuDung = Column(String(100), nullable=False)
     cachDung = Column(String(250), nullable=False)
+
     def __str__(self):
         return self.name
+
 
 class DanhSachThuoc(db.Model):
     __tablename__ = 'danhsachthuoc'
     maDS = Column(Integer, primary_key=True, autoincrement=True)
-    maThuoc_id=Column(Integer, ForeignKey(Thuoc.maThuoc))
+    maThuoc_id = Column(Integer, ForeignKey(Thuoc.maThuoc))
 
     quanly = relationship('QuanLy', backref='danhsachthuoc', lazy=True)
 
     def __str__(self):
         return self.name
 
+
 class HoaDonThanhToan(db.Model):
     __tablename__ = 'hoadonthanhtoan'
     maHD = Column(Integer, primary_key=True, autoincrement=True)
-    tienKham=Column(Float,nullable=False)
-    tienThuoc=Column(Float,nullable=False)
-    tongTien=Column(Float,nullable=False)
-    thuNgan_id=Column(Integer, ForeignKey(ThuNgan.thuNgan_id))
-    maPhieuKham=Column(Integer, ForeignKey(PhieuKhamBenh.maPhieuKham))
+    tienKham = Column(Float, nullable=False)
+    tienThuoc = Column(Float, nullable=False)
+    tongTien = Column(Float, nullable=False)
+    thuNgan_id = Column(Integer, ForeignKey(ThuNgan.thuNgan_id))
+    maPhieuKham = Column(Integer, ForeignKey(PhieuKhamBenh.maPhieuKham))
 
     bieumau = relationship('BieuMau', backref='hoadonthanhtoan', lazy=True)
     quanly = relationship('QuanLy', backref='hoadonthanhtoan', lazy=True)
@@ -271,36 +287,16 @@ class HoaDonThanhToan(db.Model):
         return self.name
 
 
-
 class BieuMau(db.Model):
     __tablename__ = 'bieumau'
-    maBM= Column(Integer, primary_key=True, autoincrement=True)
-    tenBM=Column(String(250), nullable=False)
+    maBM = Column(Integer, primary_key=True, autoincrement=True)
+    tenBM = Column(String(250), nullable=False)
     ngayKham = Column(DateTime, default=datetime.now())
 
-
-    maPhieuKham=Column(Integer, ForeignKey(PhieuKhamBenh.maPhieuKham))
+    maPhieuKham = Column(Integer, ForeignKey(PhieuKhamBenh.maPhieuKham))
     hoaDon_id = Column(Integer, ForeignKey(HoaDonThanhToan.maHD))
     dsKhamBenh_id = Column(Integer, ForeignKey(DanhSachKhamBenh.id))
     lichKhamBenh = Column(Integer, ForeignKey(LichKhamBenh.id))
-
-
-    def __str__(self):
-        return self.name
-
-#QuanLy
-
-class QuanLy(db.Model):
-    __tablename__ = 'quanly'
-    quanLy_id= Column(Integer, primary_key=True, autoincrement=True)
-    dsThuoc_id=Column(Integer, ForeignKey(DanhSachThuoc.maDS))
-    thuoc_id = Column(Integer, ForeignKey(Thuoc.maThuoc))
-    quyDinh_id = Column(Integer, ForeignKey(QuyDinh.maQD))
-    maPhieuKham_id = Column(Integer, ForeignKey(PhieuKhamBenh.maPhieuKham))
-    hoaDon_id = Column(Integer, ForeignKey(HoaDonThanhToan.maHD))
-    danhSachKhamBenh_id = Column(Integer, ForeignKey(DanhSachKhamBenh.id))
-
-    admin = relationship('Admin', backref='quanly', lazy=True)
 
     def __str__(self):
         return self.name
@@ -310,51 +306,107 @@ class Admin(NhanVien):
     __tablename__ = 'admin'
     # primary key
     admin_id = Column(Integer, ForeignKey(NhanVien.maNV), primary_key=True)
-    quanLy_id = Column(Integer, ForeignKey(QuanLy.quanLy_id),primary_key=True)
+    quanly_id = relationship('QuanLy', backref='admin', lazy=True)
 
     def __str__(self):
         return self.name
 
 
+# QuanLy
+class QuanLy(db.Model):
+    __tablename__ = 'quanly'
+    quanLy_id = Column(Integer, primary_key=True, autoincrement=True)
+    dsThuoc_id = Column(Integer, ForeignKey(DanhSachThuoc.maDS))
+    quyDinh_id = Column(Integer, ForeignKey(QuyDinh.maQD))
+    maPhieuKham_id = Column(Integer, ForeignKey(PhieuKhamBenh.maPhieuKham))
+    hoaDon_id = Column(Integer, ForeignKey(HoaDonThanhToan.maHD))
+    danhSachKhamBenh_id = Column(Integer, ForeignKey(DanhSachKhamBenh.id))
 
-if __name__=="__main__":
+    admin_id = Column(Integer, ForeignKey(Admin.admin_id), primary_key=True)
+
+    def __str__(self):
+        return self.name
+
+
+if __name__ == "__main__":
     from app import app
-    with app.app_context():
 
+    with app.app_context():
         db.create_all()
 
-        #########################
+        ## ---------------------ADD BENHNHAN------------------------
+        # benhnhan1 = BenhNhan(
+        #     hoTen='Nguyễn Văn A',
+        #     ngaySinh=datetime(1990, 1, 1),
+        #     maCCCD='56565658',
+        #     diaChi='123 Đường ABC, Quận XYZ',
+        #     email='nguyenvana@example.com',
+        #     soDienThoai='012366789',
+        #     sex=Sex.MALE,
+        #     tienSuBenh='Tiền sử bệnh của bệnh nhân 1'
+        # )
+        # benhnhan2 = BenhNhan(
+        #     hoTen='Trần Thị B',
+        #     ngaySinh=datetime(1985, 5, 5),
+        #     maCCCD='98724661012',
+        #     diaChi='456 Đường XYZ, Quận ABC',
+        #     email='tranthib@example.com',
+        #     soDienThoai='0987274321',
+        #     sex=Sex.FEMALE,
+        #     tienSuBenh='Tiền sử bệnh của bệnh nhân 2'
+        # )
+        # db.session.add_all([benhnhan1,benhnhan2])
+        # db.session.commit()
+        ## ---------------------ADD USER------------------------
         import hashlib
 
-        # u1 = User(name='BacSi',
+        # u1 = User(name='Admin',
+        #           username='admin',
+        #           password=str(hashlib.md5('123456'.encode('utf-8')).hexdigest()),
+        #           avatar='https://mdbcdn.b-cdn.net/img/new/avatars/2.webp',
+        #           user_role=UserRoleEnum.ADMIN)
+        #
+        # u2 = User(name='BacSi',
         #           username='bacsi',
         #           password=str(hashlib.md5('123456'.encode('utf-8')).hexdigest()),
+        #           avatar='https://hoanmy.com/wp-content/uploads/2023/05/HMSG-BS-NGUYEN-THI-THU-MAI.jpg',
         #           user_role=UserRoleEnum.BACSI)
-
-        # u2 = User(name='Admin',
-        #          username='admin',
-        #          password=str(hashlib.md5('123456'.encode('utf-8')).hexdigest()),
-        #          user_role=UserRoleEnum.ADMIN
-        #          )
-        # u3 = User(name='VoDuyKhoi',
-        #     username='voduykhoi',
-        #     password=str(hashlib.md5('123456'.encode('utf-8')).hexdigest()),
-        #     user_role=UserRoleEnum.USER )
-        # u4 = User(name='thungan',
-        #     username='thungan',
-        #     password=str(hashlib.md5('123456'.encode('utf-8')).hexdigest()),
-        #     user_role=UserRoleEnum.YTA )
-        # u5 = User(name='thungan',
+        #
+        # u3 = User(name='User',
+        #           username='user',
+        #           password=str(hashlib.md5('123456'.encode('utf-8')).hexdigest()),
+        #           avatar='https://mdbcdn.b-cdn.net/img/new/avatars/1.webp',
+        #           user_role=UserRoleEnum.USER)
+        # u4 = User(name='YTa',
+        #           username='yta',
+        #           password=str(hashlib.md5('123456'.encode('utf-8')).hexdigest()),
+        #           avatar='https://th.bing.com/th/id/OIP.rdALIqgMwrEqQjUn0ZfJpwHaHR?w=768&h=754&rs=1&pid=ImgDetMain',
+        #           user_role=UserRoleEnum.YTA)
+        # u5 = User(name='ThuNgan',
         #           username='thungan',
         #           password=str(hashlib.md5('123456'.encode('utf-8')).hexdigest()),
+        #           avatar='https://mdbcdn.b-cdn.net/img/Photos/Avatars/img%20(10).webp',
         #           user_role=UserRoleEnum.THUNGAN)
-        # u6 = User(name='yta2',
-        #           username='yta2',
-        #           password=str(hashlib.md5('123456'.encode('utf-8')).hexdigest()),
-        #           user_role=UserRoleEnum.YTA)
-        # db.session.add_all([u1,u2,u3,u4,u5,u6])
+        #
+        # db.session.add_all([u1, u2, u3, u4, u5])
         # db.session.commit()
-        #######################
+        ## ---------------------ADD ADMIN------------------------
+        # admin1 = Admin(
+        #     hoTen="Võ Duy Khôi",
+        #     ngaySinh=datetime(2003, 4, 15),
+        #     maCCCD="032122026",
+        #     diaChi="Thới Lai, Bình Đại, Bến Tre",
+        #     email="voduykhoi1504@example.com",
+        #     soDienThoai="0362728158",
+        #     sex=Sex.MALE,
+        #     ngayVaoLam=datetime(2016, 4, 20),
+        #     avatar="https://mdbcdn.b-cdn.net/img/new/avatars/1.webp",
+        #     user_id=1
+        # )
+        #
+        # db.session.add(admin1)
+        # db.session.commit()
+        ## ---------------------Bác sĩ------------------------
         # d1 = BacSi(
         #     hoTen="Nguyễn Thị Thu Hồng",
         #     ngaySinh=datetime(1990, 1, 1),
@@ -364,7 +416,8 @@ if __name__=="__main__":
         #     soDienThoai="1234567890",
         #     sex=Sex.MALE,
         #     ngayVaoLam=datetime.now(),
-        #     avatar="https://hoanmy.com/wp-content/uploads/2023/05/HMSGC-Bs-Phan-Thanh-Tuoi.jpg"
+        #     avatar="https://hoanmy.com/wp-content/uploads/2023/05/HMSGC-Bs-Phan-Thanh-Tuoi.jpg",
+        #     user_id=2
         #
         # )
         # d2 = BacSi(
@@ -406,8 +459,7 @@ if __name__=="__main__":
         #
         # db.session.add_all([d1, d2, d3, d4])
         # db.session.commit()
-        ## #########################
-        #values thungan
+        ## ---------------------ADD YTA------------------------
         # yta1 = YTa(
         #     hoTen="Nguyễn Văn Y ",
         #     ngaySinh=datetime(2003, 1, 1),
@@ -418,12 +470,13 @@ if __name__=="__main__":
         #     sex=Sex.MALE,
         #     ngayVaoLam=datetime(2017, 4, 20),
         #     avatar="https://res.cloudinary.com/dx9eo8pyh/image/upload/v1704361418/yta_qwimqb.png",
+        #     user_id=4
         #
         # )
         #
         # yta2 = YTa(
         #     hoTen="Trần Thị Mỹ",
-        #     ngaySinh=datetime(2003, 2, 1),
+        #     ngaySinh=datetime(2002, 2, 1),
         #     maCCCD="987654321017",
         #     diaChi="456 Đường Sồi",
         #     email="yta2@example.com",
@@ -431,68 +484,191 @@ if __name__=="__main__":
         #     sex=Sex.FEMALE,
         #     ngayVaoLam=datetime(2018, 5, 25),
         #     avatar="https://res.cloudinary.com/dx9eo8pyh/image/upload/v1704361418/yta_qwimqb.png",
-        #
         # )
-        #
-        # yta3 = YTa(
-        #     hoTen="Lê Văn Sĩ",
-        #     ngaySinh=datetime(2003, 3, 1),
-        #     maCCCD="111222333444",
-        #     diaChi="789 Đường Thông",
-        #     email="yta3@example.com",
-        #     soDienThoai="5556667777",
+        # db.session.add_all([yta1,yta2])
+        # db.session.commit()
+        ## ---------------------ADD THU NGAN------------------------
+        # thungan1 = ThuNgan(
+        #     hoTen="Nguyễn Trọng Phúc",
+        #     ngaySinh=datetime(2002, 9, 12),
+        #     maCCCD="987654325",
+        #     diaChi="DS19 Hiep Binh Chanhn",
+        #     email="thungan1@example.com",
+        #     soDienThoai="036897456",
         #     sex=Sex.MALE,
-        #     ngayVaoLam=datetime(2019, 8, 13),
+        #     ngayVaoLam=datetime(2016, 4, 20),
         #     avatar="https://res.cloudinary.com/dx9eo8pyh/image/upload/v1704361418/yta_qwimqb.png",
-        #
+        #     user_id=5
         # )
-        #
-        # yta4 = YTa(
-        #     hoTen="Phạm Thị Nơ",
-        #     ngaySinh=datetime(2003, 4, 1),
-        #     maCCCD="555666777888",
-        #     diaChi="987 Đường Phố",
-        #     email="yta4@example.com",
-        #     soDienThoai="4443332222",
+        # thungan2 = ThuNgan(
+        #     hoTen="Võ Thị Mẫn Nghi",
+        #     ngaySinh=datetime(2001, 9, 12),
+        #     maCCCD="987654666",
+        #     diaChi="239 Phan Văn Trị",
+        #     email="thungan2@example.com",
+        #     soDienThoai="036889456",
         #     sex=Sex.FEMALE,
-        #     ngayVaoLam=datetime(2015, 6, 10),
+        #     ngayVaoLam=datetime(2019, 4, 20),
         #     avatar="https://res.cloudinary.com/dx9eo8pyh/image/upload/v1704361418/yta_qwimqb.png",
-        #
         # )
         #
-        # yta5 = YTa(
-        #     hoTen="Võ Văn Kiệt",
-        #     ngaySinh=datetime(2003, 7, 1),
-        #     maCCCD="999888777666",
-        #     diaChi="654 Đường Cây",
-        #     email="yta5@example.com",
-        #     soDienThoai="1112223333",
-        #     sex=Sex.MALE,
-        #     ngayVaoLam=datetime(2015, 3, 15),
-        #     avatar="https://res.cloudinary.com/dx9eo8pyh/image/upload/v1704361418/yta_qwimqb.png",
+        # db.session.add_all([thungan1,thungan2])
+        # db.session.commit()
+        ## ---------------------Thuoc-----------------------
+        # thuoc1 = Thuoc(tenThuoc='Acetylcystein',moTa='Thuốc Acetylcystein 200mg Khapharco tiêu nhầy trong bệnh viêm phế quản, bệnh nhầy nhớt (190 viên)',
+        #                ngaySX=datetime(2023, 1, 1),nhaSX='Khánh Hòa',
+        #                soLuong=190,giaTien='147000',
+        #                image='https://cdn.nhathuoclongchau.com.vn/unsafe/373x0/filters:quality(90)/https://cms-prod.s3-sgn09.fptcloud.com/00033640_acetylcystein_200mg_khapharco_190v_4715_6239_large_c0df9dbf99.jpg',
+        #                 maDV_id='1')
+        # thuoc2 = Thuoc(tenThuoc='Panadol', moTa='Hoạt chất: Paracetamol 500mg/viên',
+        #                ngaySX=datetime(2023, 2, 12), nhaSX='GlaxoSmithKline',
+        #                soLuong=5, giaTien='60000',
+        #                image='https://cdn.nhathuoclongchau.com.vn/unsafe/373x0/filters:quality(90)/https://cms-prod.s3-sgn09.fptcloud.com/00005708_panadol_500mg_vien_sui_9558_5c06_large_1e05052a61.JPG',
+        #                maDV_id='3')
+        # thuoc3 = Thuoc(tenThuoc='Frigofast Spray ', moTa='Chai xịt lạnh Frigofast Spray giảm đau bong gân, căng cơ, giãn dây chằng (200ml)',
+        #                ngaySX=datetime(2022, 5, 22), nhaSX='FARMAC - ZABBAN S.P.A',
+        #                soLuong=80, giaTien='175000',
+        #                image='https://cdn.nhathuoclongchau.com.vn/unsafe/373x0/filters:quality(90)/https://cms-prod.s3-sgn09.fptcloud.com/00502251_chai_xit_lanh_giam_dau_frigofast_spray_italia_200ml_8660_63d7_large_aa0c229207.jpg',
+        #                maDV_id='2')
+        # db.session.add_all([thuoc1,thuoc2,thuoc3])
+        # db.session.commit()
+
+        ## ---------------------DON VI------------------------
+
+        # donvi1 = DonVi(tenDV='viên')
+        # donvi2 = DonVi(tenDV='chay')
+        # donvi3 = DonVi(tenDV='vĩ')
         #
+        # db.session.add_all([donvi1, donvi2,donvi3])
+        # db.session.commit()
+        ## ---------------------DANH SACH THUOC------------------------
+        #
+        # dsthuoc1 = DanhSachThuoc(maThuoc_id=1)
+        # dsthuoc2 = DanhSachThuoc(maThuoc_id=2)
+        # dsthuoc3 = DanhSachThuoc(maThuoc_id=3)
+        #
+        #
+        # db.session.add_all([dsthuoc1, dsthuoc2,dsthuoc3])
+        # db.session.commit()
+
+        ## ---------------------ADD QUY DINH------------------------
+        # quydinh1 = QuyDinh(tenQD='Số lượt khám trong ngày',
+        #                    noiDung='Mỗi ngày khám tối đa 40 bệnh nhân.')
+        # quydinh2 = QuyDinh(tenQD='Quy định về loại và đơn vị thuốc',
+        #                    noiDung='Có 30 loại thuốc, 3 loại đơn vị (viên, chai, vỹ).')
+        # quydinh3 = QuyDinh(tenQD='Tiền Khám',
+        #                    noiDung='Tiền khám 100.000 VNĐ')
+        # db.session.add_all([quydinh1, quydinh2,quydinh3])
+        # db.session.commit()
+        ## ---------------------ADD PHIEUKHAMBENH------------------------
+        # phieukhambenh1 = PhieuKhamBenh(trieuChung='Triệu chứng của bệnh nhân 1',
+        #                    duDoanBenh='Dự đoán bệnh cho bệnh nhân 1',
+        #                          bacsi_ID=1)
+        # phieukhambenh2 = PhieuKhamBenh(trieuChung='Triệu chứng của bệnh nhân 2',
+        #                          duDoanBenh='Dự đoán bệnh cho bệnh nhân 2',
+        #                          bacsi_ID=2)
+        # db.session.add_all([phieukhambenh1, phieukhambenh2])
+        # db.session.commit()
+        ## ---------------------HUONG DAN SU DUNG------------------------
+        # huongdansudung1 = HuongDanSuDung(maThuoc_id=2,
+        #                                  maPhieuKham_id=1,
+        #                                  lieuDung='1 – 2 viên/lần, dùng cách nhau ít nhất 4 – 6 tiếng. Chỉ sử dụng tối đa 8 viên/ngày',
+        #                                  cachDung='Uống thuốc với nước. Không nhai hoặc nghiền thuốc khi sử dụng.')
+        # huongdansudung2 = HuongDanSuDung(maThuoc_id=1,
+        #                                  maPhieuKham_id=2,
+        #                                  lieuDung='Người lớn và trẻ em trên 7 tuổi: 200mg/ lần x 3 lần/ ngày. Liều tối đa không quá 600mg/ ngày',
+        #                                  cachDung='Không được dùng đồng thời với các thuốc ho khác hoặc bất cứ thuốc nào làm giảm bài tiết đờm.')
+        # db.session.add_all([huongdansudung1, huongdansudung2])
+        # db.session.commit()
+
+        ## ---------------------HOADONTHANHTOAN------------------------
+        # hoadonthanhtoan1 = HoaDonThanhToan(tienKham=500000,tienThuoc=120000,tongTien=620000,thuNgan_id=7,maPhieuKham=1)
+        # hoadonthanhtoan2 = HoaDonThanhToan(tienKham=500000, tienThuoc=100000, tongTien=600000, thuNgan_id=7, maPhieuKham=2)
+        # db.session.add_all([hoadonthanhtoan1, hoadonthanhtoan2])
+        # db.session.commit()
+        ## ---------------------DANHSACHKHAMBENH------------------------
+        # dskhambenh1 = DanhSachKhamBenh(soLuongBenhNhanToiDa=40, YTa_ID=5)
+        # dskhambenh2 = DanhSachKhamBenh(soLuongBenhNhanToiDa=40, YTa_ID=5)
+        # db.session.add_all([dskhambenh1, dskhambenh2])
+        # db.session.commit()
+        ## ---------------------LICHKHAMBENH------------------------
+        # lichkhambenh1 = LichKhamBenh(maBN=1,dsKhamBenh_id=1)
+        # lichkhambenh2 = LichKhamBenh(maBN=2,dsKhamBenh_id=2)
+        #
+        # db.session.add_all([lichkhambenh1, lichkhambenh2])
+        # db.session.commit()
+        #
+        ## ---------------------BIEUMAU------------------------
+        # bieu_mau = BieuMau(
+        #     tenBM='Biểu mẫu 1',
+        #     ngayKham=datetime.now(),
+        #     maPhieuKham=1,  # Thay 1 bằng ID thực tế của Phiếu Khám Bệnh
+        #     hoaDon_id=2,  # Thay 2 bằng ID thực tế của Hóa Đơn Thanh Toán
+        #     dsKhamBenh_id=3,  # Thay 3 bằng ID thực tế của Danh Sách Khám Bệnh
+        #     lichKhamBenh=4  # Thay 4 bằng ID thực tế của Lịch Khám Bệnh
         # )
-        # db.session.add_all([yta1,yta2,yta3,yta4,yta5])
+        # db.session.add_all([lichkhambenh1, lichkhambenh2])
         # db.session.commit()
-        #Values Yta
-      #########################
-        # c1 = Category(name="Iphone")
-        # c2 = Category(name="tablet")
         #
-        # db.session.add(c1)
-        # db.session.add(c2)
+        ## ---------------------QUANLY------------------------
+        # quanly1 = QuanLy(
+        #     dsThuoc_id=1,  # Thay 1 bằng ID thực tế của Danh Sách Thuốc
+        #     quyDinh_id=1,  # Thay 3 bằng ID thực tế của Quy Định
+        #     maPhieuKham_id=1,  # Thay 4 bằng ID thực tế của Phiếu Khám Bệnh
+        #     hoaDon_id=1,  # Thay 5 bằng ID thực tế của Hóa Đơn Thanh Toán
+        #     danhSachKhamBenh_id=1,  # Thay 6 bằng ID thực tế của Danh Sách Khám Bệnh
+        #     admin_id=12
+        # )
+        # quanly2 = QuanLy(
+        #     dsThuoc_id=2,  # Thay 1 bằng ID thực tế của Danh Sách Thuốc
+        #     quyDinh_id=2,  # Thay 3 bằng ID thực tế của Quy Định
+        #     maPhieuKham_id=2,  # Thay 4 bằng ID thực tế của Phiếu Khám Bệnh
+        #     hoaDon_id=2,  # Thay 5 bằng ID thực tế của Hóa Đơn Thanh Toán
+        #     danhSachKhamBenh_id=2,  # Thay 6 bằng ID thực tế của Danh Sách Khám Bệnh
+        #     admin_id=12
+        # )
+        #
+        # db.session.add_all([quanly1, quanly2])
         # db.session.commit()
-        # ########################
-        # p1 = Product(name="IPhone15 Pro Max", price=10000000, Category_ID=2, image= "https://mobilepriceall.com/wp-content/uploads/2022/09/Apple-iPhone-14-1024x1024.jpg")
-        # p2 = Product(name="IPhone12 Pro Max", price=20000000, Category_ID=2, image= "https://mobilepriceall.com/wp-content/uploads/2022/09/Apple-iPhone-14-1024x1024.jpg")
-        # p3 = Product(name="IPhone13 Pro Max", price=30000000, Category_ID=2,  image= "https://mobilepriceall.com/wp-content/uploads/2022/09/Apple-iPhone-14-1024x1024.jpg")
-        # p4 = Product(name="IPhone16 Pro Max", price=40000000, Category_ID=1,  image= "https://mobilepriceall.com/wp-content/uploads/2022/09/Apple-iPhone-14-1024x1024.jpg")
-        # p5 = Product(name="IPhone19 Pro Max", price=90000000, Category_ID=1,  image= "https://mobilepriceall.com/wp-content/uploads/2022/09/Apple-iPhone-14-1024x1024.jpg")
-        # p6 = Product(name="Samsung", price=10000000, Category_ID=2, image= "https://mobilepriceall.com/wp-content/uploads/2022/09/Apple-iPhone-14-1024x1024.jpg")
-        # p7 = Product(name="Oppo Pro Max", price=20000000, Category_ID=2, image= "https://mobilepriceall.com/wp-content/uploads/2022/09/Apple-iPhone-14-1024x1024.jpg")
-        # p8 = Product(name="realme Pro Max", price=30000000, Category_ID=2,  image= "https://mobilepriceall.com/wp-content/uploads/2022/09/Apple-iPhone-14-1024x1024.jpg")
-        # p9 = Product(name="Oppo 2", price=40000000, Category_ID=1,  image= "https://mobilepriceall.com/wp-content/uploads/2022/09/Apple-iPhone-14-1024x1024.jpg")
-        # p10 = Product(name="Samsung2 Pro Max", price=90000000, Category_ID=1,  image= "https://mobilepriceall.com/wp-content/uploads/2022/09/Apple-iPhone-14-1024x1024.jpg")
-        # db.session.add_all([p1, p2, p3, p4, p5,p6, p7, p8, p9, p10])
+        ## ---------------------BIEUMAU------------------------
+        # bieumau1 = BieuMau(
+        #     tenBM='Biểu mẫu 1',
+        #     ngayKham=datetime(2023, 11, 12),
+        #     maPhieuKham=1,
+        #     hoaDon_id=1,
+        #     dsKhamBenh_id=1,
+        #     lichKhamBenh=1
+        # )
+        # bieumau2 = BieuMau(
+        #     tenBM='Biểu mẫu 1',
+        #     ngayKham=datetime.now(),
+        #     maPhieuKham=2,
+        #     hoaDon_id=2,
+        #     dsKhamBenh_id=2,
+        #     lichKhamBenh=2
+        # )
+        # db.session.add_all([bieumau1, bieumau2])
         # db.session.commit()
-        # # #####
+
+
+    #########################
+    # c1 = Category(name="Iphone")
+    # c2 = Category(name="tablet")
+    #
+    # db.session.add(c1)
+    # db.session.add(c2)
+    # db.session.commit()
+    # ########################
+    # p1 = Product(name="IPhone15 Pro Max", price=10000000, Category_ID=2, image= "https://mobilepriceall.com/wp-content/uploads/2022/09/Apple-iPhone-14-1024x1024.jpg")
+    # p2 = Product(name="IPhone12 Pro Max", price=20000000, Category_ID=2, image= "https://mobilepriceall.com/wp-content/uploads/2022/09/Apple-iPhone-14-1024x1024.jpg")
+    # p3 = Product(name="IPhone13 Pro Max", price=30000000, Category_ID=2,  image= "https://mobilepriceall.com/wp-content/uploads/2022/09/Apple-iPhone-14-1024x1024.jpg")
+    # p4 = Product(name="IPhone16 Pro Max", price=40000000, Category_ID=1,  image= "https://mobilepriceall.com/wp-content/uploads/2022/09/Apple-iPhone-14-1024x1024.jpg")
+    # p5 = Product(name="IPhone19 Pro Max", price=90000000, Category_ID=1,  image= "https://mobilepriceall.com/wp-content/uploads/2022/09/Apple-iPhone-14-1024x1024.jpg")
+    # p6 = Product(name="Samsung", price=10000000, Category_ID=2, image= "https://mobilepriceall.com/wp-content/uploads/2022/09/Apple-iPhone-14-1024x1024.jpg")
+    # p7 = Product(name="Oppo Pro Max", price=20000000, Category_ID=2, image= "https://mobilepriceall.com/wp-content/uploads/2022/09/Apple-iPhone-14-1024x1024.jpg")
+    # p8 = Product(name="realme Pro Max", price=30000000, Category_ID=2,  image= "https://mobilepriceall.com/wp-content/uploads/2022/09/Apple-iPhone-14-1024x1024.jpg")
+    # p9 = Product(name="Oppo 2", price=40000000, Category_ID=1,  image= "https://mobilepriceall.com/wp-content/uploads/2022/09/Apple-iPhone-14-1024x1024.jpg")
+    # p10 = Product(name="Samsung2 Pro Max", price=90000000, Category_ID=1,  image= "https://mobilepriceall.com/wp-content/uploads/2022/09/Apple-iPhone-14-1024x1024.jpg")
+    # db.session.add_all([p1, p2, p3, p4, p5,p6, p7, p8, p9, p10])
+    # db.session.commit()
+    # # #####

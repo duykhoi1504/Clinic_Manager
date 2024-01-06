@@ -37,6 +37,26 @@ function updateCart(id, obj){
     })
 }
 
+//function deleteBenhNhan(benhnhanId) {
+//    if (confirm("Bạn có chắc chắn muốn xóa bệnh nhân này?")) {
+//        // Sử dụng AJAX để gửi yêu cầu xóa
+//        fetch(`/delete_benhnhan/${benhnhanId}`, {
+//            method: 'POST',
+//        })
+//        .then(response => response.json())
+//        .then(data => {
+//            if (data.status === 'success') {
+//                // Xóa hàng từ bảng
+//                document.getElementById(`row-${benhnhanId}`).remove();
+//            } else {
+//                alert("Xóa bệnh nhân thất bại.");
+//            }
+//        })
+//        .catch(error => console.error('Error:', error));
+//    }
+//}
+
+
 function deleteCart(id,obj){
     if(confirm("ban chac muon xoa khong")===true){
         obj.disabled=true;

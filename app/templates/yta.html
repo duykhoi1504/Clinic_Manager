@@ -3,23 +3,34 @@
 
 {% block content %}
 <!-- MAKE AN APPOINTMENT -->
+
+<div style="margin-top:70px"></div>
 {% if err_msg %}
-<div class="alert alert-danger">
-    {{ err_msg }}
+<!--<div class="alert alert-danger">-->
+<!--    {{ err_msg }}-->
+<!--</div>-->
+<div class="alert alert-dismissible alert-danger ">
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    <strong>Oh Không!!!</strong> <a href="#" class="alert-link">Sai thông tin đăng nhập ròu</a> hãy thử lại lần nữa.
 </div>
+
 {% elif success_message %}
-<div class="alert alert-info">
-    {{ success_message }}
+<!--<div class="alert alert-info">-->
+<!--    {{ success_message }}-->
+<!--</div>-->
+<div class="alert alert-dismissible alert-success">
+  <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+  <strong>Well done!</strong> Đăng kí thành công.
 </div>
 {% endif %}
 <div class="container mt-4">
 
     <div class="row">
         <!-- Left Column - Form -->
-   {% include 'layout/yta/yta_dangkikhamtructiep.html' %}
+        {% include 'layout/yta/yta_dangkikhamtructiep.html' %}
 
         <!-- Right Column - Slider -->
-   {% include 'layout/yta/yta_danhsachbenhnhan.html' %}
+        {% include 'layout/yta/yta_danhsachbenhnhan.html' %}
     </div>
 </div>
 {% endblock %}
