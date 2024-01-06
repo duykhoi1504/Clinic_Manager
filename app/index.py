@@ -1,43 +1,47 @@
 import math
 
-from flask import render_template, request, redirect, session, jsonify,flash,url_for
+from flask import render_template, request, redirect, session, jsonify, flash, url_for
 import dao, utils
-from app import app, login,db
+from app import app, login, db
 from flask_login import login_user, logout_user
-from app.models import NhanVien,UserRoleEnum,BenhNhan
+from app.models import NhanVien, UserRoleEnum, BenhNhan
 from datetime import datetime
 from app.admin import current_user
+
 
 @app.route("/")
 def index():
     kw = request.args.get('kw')
     page = request.args.get('page')
     cates = dao.load_categories()
-    products=dao.load_products(kw=kw,page=page)
-    nhanviens=dao.load_nhanviens(kw=kw,page=page)
-
+    products = dao.load_products(kw=kw, page=page)
+    nhanviens = dao.load_nhanviens(kw=kw, page=page)
 
     image_data = [
-        {'url': 'https://hoanmy.com/wp-content/uploads/2023/12/dai-thao-duong.png', 'title': 'Những biến chứng nguy hiểm của đái tháo đường và cách phòng ngừa',
+        {'url': 'https://hoanmy.com/wp-content/uploads/2023/12/dai-thao-duong.png',
+         'title': 'Những biến chứng nguy hiểm của đái tháo đường và cách phòng ngừa',
          'content': 'Thời gian gần đây, tỷ lệ người bệnh đái tháo đường đang gia tăng khá cao. Theo số liệu từ Hiệp hội Đái tháo đường Thế giới (International Diabetes Federation – IDF), vào năm 2019, thế giới có khoảng 463 triệu người mắc bệnh đái tháo đường. Trong số đó, ước tính hơn 4 triệu […]'},
-        {'url': 'https://hoanmy.com/wp-content/uploads/2023/12/suy-gian-tinh-mach-1706-x-1080-px.png', 'title': 'Cách phòng ngừa, điều trị suy giãn tĩnh mạch để tránh biến chứng về sau',
+        {'url': 'https://hoanmy.com/wp-content/uploads/2023/12/suy-gian-tinh-mach-1706-x-1080-px.png',
+         'title': 'Cách phòng ngừa, điều trị suy giãn tĩnh mạch để tránh biến chứng về sau',
          'content': 'Suy giãn tĩnh mạch là căn bệnh phổ biến hiện nay, ảnh hưởng tới chất lượng cuộc sống người bệnh. Nếu không được điều trị đúng cách, bệnh có thể gây nên nhiều biến chứng nguy hiểm. Hãy cùng bệnh viện Hoàn Mỹ Sài Gòn tìm hiểu về cách phòng ngừa và điều trị suy […]'},
         # Thêm các phần tử khác nếu cần
-        {'url': 'https://hoanmy.com/wp-content/uploads/2023/11/AdobeStock_455652091-scaled.jpeg', 'title': 'Điều trị ung thư dạ dày ở đâu tốt?',
+        {'url': 'https://hoanmy.com/wp-content/uploads/2023/11/AdobeStock_455652091-scaled.jpeg',
+         'title': 'Điều trị ung thư dạ dày ở đâu tốt?',
          'content': 'Theo số liệu từ Globocan 2020, ung thư dạ dày thuộc nhóm có tỷ lệ tử vong cao thứ 3 tại Việt Nam, và ngày nay loại ung thư này đang có xu hướng trẻ hóa. Chính vì thế, việc nắm được các dấu hiệu của bệnh ung thư dạ dày và tầm soát sức […]'},
-        {'url': 'https://hoanmy.com/wp-content/uploads/2023/10/BCSCHU1-1.jpg', 'title': 'Hạ đường huyết có nguy hiểm không? Nguyên nhân và cách xử trí',
+        {'url': 'https://hoanmy.com/wp-content/uploads/2023/10/BCSCHU1-1.jpg',
+         'title': 'Hạ đường huyết có nguy hiểm không? Nguyên nhân và cách xử trí',
          'content': 'Hạ đường huyết là tình trạng dễ gặp ở người bệnh đái tháo đường hoặc người ăn uống không khoa học. Đây là dấu hiệu cảnh báo một số vấn đề nghiêm trọng của cơ thể, cần phát hiện kịp thời và có biện pháp xử lý nhanh để tránh biến chứng nguy hiểm. Hạ […]'},
     ]
     total = dao.count_product()
 
     return render_template("index.html",
-                           products=products,nhanviens=nhanviens,
+                           products=products, nhanviens=nhanviens,
                            image_data=image_data,
                            pages=math.ceil(total / app.config['PAGE_SIZE']),
-                           role=current_user.user_role if current_user.is_authenticated else None,)
+                           role=current_user.user_role if current_user.is_authenticated else None, )
 
 
-@app.route("/datlichkham",methods=['post', 'get'])
+@app.route("/datlichkham", methods=['post', 'get'])
 def add_benh_nhan():
     err_msg = ""
     success_message = ""
@@ -55,31 +59,32 @@ def add_benh_nhan():
             err_msg = "Please fill in all required fields."
             return render_template("BenhNhan.html", err_msg=err_msg)
         try:
-            dao.add_benhnhan(hoTen=hoTen,ngaySinh=ngaySinh,maCCCD=maCCCD,diaChi=diaChi,email=email,soDienThoai=soDienThoai,tienSuBenh=tienSuBenh,sex=sex)
+            dao.add_benhnhan(hoTen=hoTen, ngaySinh=ngaySinh, maCCCD=maCCCD, diaChi=diaChi, email=email,
+                             soDienThoai=soDienThoai, tienSuBenh=tienSuBenh, sex=sex)
             success_message = "BenhNhan added successfully!"
             err_msg = ""
         except:
             success_message = ""
             err_msg = "he thong dang loi!"
 
-        return render_template("BenhNhan.html", err_msg=err_msg,success_message=success_message)
-    return render_template("BenhNhan.html", err_msg=err_msg,success_message=success_message)
+        return render_template("BenhNhan.html", err_msg=err_msg, success_message=success_message)
+    return render_template("BenhNhan.html", err_msg=err_msg, success_message=success_message)
 
-@app.route('/thanhtoan',methods=['post', 'get'])
+
+@app.route('/thanhtoan', methods=['post', 'get'])
 def thanhtoan():
     return render_template("thungan.html")
 
 
+# ------------------ DANGKIKHAMTRUCTIEP----------------------
 
-#------------------ DANGKIKHAMTRUCTIEP----------------------
-
-@app.route('/dangkikhamtructiep',methods=['post', 'get'])
+@app.route('/dangkikhamtructiep', methods=['post', 'get'])
 def dangkitructiep():
     err_msg = ""
     success_message = ""
-    benhnhans=dao.load_benhnhans()
+    benhnhans = dao.load_benhnhans()
 
-    if request.method==('POST'):
+    if request.method == ('POST'):
         hoTen = request.form.get('hoTen')
         ngaySinh = request.form.get('ngaySinh')
         maCCCD = request.form.get('maCCCD')
@@ -91,8 +96,8 @@ def dangkitructiep():
 
         if not all([hoTen, ngaySinh, maCCCD, diaChi, email, soDienThoai, tienSuBenh, sex]):
             err_msg = "Please fill in all required fields."
-            session['err_msg'] = err_msg
-            return render_template("yta.html",benhnhans=benhnhans, err_msg=err_msg)
+
+            return render_template("yta.html", benhnhans=benhnhans, err_msg=err_msg)
         try:
             dao.add_benhnhan(hoTen=hoTen, ngaySinh=ngaySinh, maCCCD=maCCCD, diaChi=diaChi, email=email,
                              soDienThoai=soDienThoai, tienSuBenh=tienSuBenh, sex=sex)
@@ -101,10 +106,8 @@ def dangkitructiep():
         except:
             success_message = ""
             err_msg = "he thong dang loi!"
-        session.pop('err_msg', None)
-        return redirect(url_for('dangkionline'))
+        return render_template("yta.html", benhnhans=benhnhans, err_msg=err_msg, success_message=success_message)
     return render_template("yta.html", benhnhans=benhnhans, err_msg=err_msg, success_message=success_message)
-
 
 
 # @app.route('/dangkikhamtructiep/<id>', methods=['POST'])
@@ -115,10 +118,10 @@ def dangkitructiep():
 #
 #     return jsonify({'status': 'success'})
 
-@app.route('/lapphieukham',methods=['post', 'get'])
+@app.route('/lapphieukham', methods=['post', 'get'])
 def lapphieukham():
-
     return render_template("bacsi.html")
+
 
 @app.route('/aboutus')
 def aboutus():
@@ -130,14 +133,13 @@ def doingu():
     return render_template("client_doingu.html")
 
 
-
 @app.route("/nhanvien/<id>")
 def details(id):
     nhanvien = NhanVien.query.get(id)
-    return render_template('details.html', nhanvien=nhanvien,datetime=datetime)
+    return render_template('details.html', nhanvien=nhanvien, datetime=datetime)
 
 
-@app.route('/login',methods=['post', 'get'])
+@app.route('/login', methods=['post', 'get'])
 def login_user_process():
     isCorrect = True;
     if request.method.__eq__('POST'):
@@ -149,10 +151,10 @@ def login_user_process():
             login_user(user=user)
         else:
             isCorrect = False;
-            return render_template('login.html',isCorrect=isCorrect)
+            return render_template('login.html', isCorrect=isCorrect)
         next = request.args.get('next')
-        return  redirect('/' if next is None else next)
-    return render_template('login.html',isCorrect=isCorrect)
+        return redirect('/' if next is None else next)
+    return render_template('login.html', isCorrect=isCorrect)
 
 
 @app.route('/logout')
@@ -174,13 +176,13 @@ def register_user():
                              password=password,
                              avatar=request.files.get('avatar'))
             except:
-                err_msg='he thong dang bi loi!!!'
+                err_msg = 'he thong dang bi loi!!!'
             else:
                 return redirect('/login')
-            #avatar là lấy từ trường name trong register.html
+            # avatar là lấy từ trường name trong register.html
             # request.files['avatar']
         else:
-            err_msg="Mật khẩu ko khớp!!!!!"
+            err_msg = "Mật khẩu ko khớp!!!!!"
 
     return render_template('register.html', err_msg=err_msg)
 
@@ -206,7 +208,7 @@ def add_cart():
     id = str(data.get("id"))
 
     if id in cart:  # san pham da co trong gio
-        cart[id]["quantity"] = cart[id]["quantity"]+1
+        cart[id]["quantity"] = cart[id]["quantity"] + 1
     else:  # san pham chua co trong gio
         cart[id] = {
             "id": id,
@@ -258,20 +260,19 @@ def cart_list():
     return render_template('cart.html')
 
 
-
 @app.route("/testhtml")
 def index1():
     return render_template("testhtml.html")
 
 
-@app.context_processor#trang nao cung se co du lieu nay`
+@app.context_processor  # trang nao cung se co du lieu nay`
 def common_resp():
     role = current_user.user_role if current_user.is_authenticated else None
-    return{
+    return {
         'caregories': dao.load_categories(),
         'cart': utils.count_cart(session.get('cart')),
-        'UserRoleEnum':UserRoleEnum,
-        'role':role
+        'UserRoleEnum': UserRoleEnum,
+        'role': role
     }
 
 
@@ -282,4 +283,5 @@ def load_user(user_id):
 
 if __name__ == '__main__':
     from app import admin
+
     app.run(debug=True)

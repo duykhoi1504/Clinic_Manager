@@ -334,7 +334,7 @@ if __name__ == "__main__":
     with app.app_context():
         db.create_all()
 
-        ## ---------------------ADD BENHNHAN------------------------
+        # # ---------------------ADD BENHNHAN------------------------
         # benhnhan1 = BenhNhan(
         #     hoTen='Nguyễn Văn A',
         #     ngaySinh=datetime(1990, 1, 1),
@@ -357,9 +357,9 @@ if __name__ == "__main__":
         # )
         # db.session.add_all([benhnhan1,benhnhan2])
         # db.session.commit()
-        ## ---------------------ADD USER------------------------
-        import hashlib
-
+        # # ---------------------ADD USER------------------------
+        # import hashlib
+        #
         # u1 = User(name='Admin',
         #           username='admin',
         #           password=str(hashlib.md5('123456'.encode('utf-8')).hexdigest()),
@@ -390,7 +390,7 @@ if __name__ == "__main__":
         #
         # db.session.add_all([u1, u2, u3, u4, u5])
         # db.session.commit()
-        ## ---------------------ADD ADMIN------------------------
+        # # ---------------------ADD ADMIN------------------------
         # admin1 = Admin(
         #     hoTen="Võ Duy Khôi",
         #     ngaySinh=datetime(2003, 4, 15),
@@ -406,7 +406,7 @@ if __name__ == "__main__":
         #
         # db.session.add(admin1)
         # db.session.commit()
-        ## ---------------------Bác sĩ------------------------
+        # # ---------------------Bác sĩ------------------------
         # d1 = BacSi(
         #     hoTen="Nguyễn Thị Thu Hồng",
         #     ngaySinh=datetime(1990, 1, 1),
@@ -459,7 +459,7 @@ if __name__ == "__main__":
         #
         # db.session.add_all([d1, d2, d3, d4])
         # db.session.commit()
-        ## ---------------------ADD YTA------------------------
+        # # ---------------------ADD YTA------------------------
         # yta1 = YTa(
         #     hoTen="Nguyễn Văn Y ",
         #     ngaySinh=datetime(2003, 1, 1),
@@ -487,7 +487,7 @@ if __name__ == "__main__":
         # )
         # db.session.add_all([yta1,yta2])
         # db.session.commit()
-        ## ---------------------ADD THU NGAN------------------------
+        # # ---------------------ADD THU NGAN------------------------
         # thungan1 = ThuNgan(
         #     hoTen="Nguyễn Trọng Phúc",
         #     ngaySinh=datetime(2002, 9, 12),
@@ -514,7 +514,26 @@ if __name__ == "__main__":
         #
         # db.session.add_all([thungan1,thungan2])
         # db.session.commit()
-        ## ---------------------Thuoc-----------------------
+        #
+        # # ---------------------DON VI------------------------
+        #
+        # donvi1 = DonVi(tenDV='viên')
+        # donvi2 = DonVi(tenDV='chay')
+        # donvi3 = DonVi(tenDV='vĩ')
+        #
+        # db.session.add_all([donvi1, donvi2,donvi3])
+        # db.session.commit()
+        # # ---------------------ADD QUY DINH------------------------
+        # quydinh1 = QuyDinh(tenQD='Số lượt khám trong ngày',
+        #                    noiDung='Mỗi ngày khám tối đa 40 bệnh nhân.')
+        # quydinh2 = QuyDinh(tenQD='Quy định về loại và đơn vị thuốc',
+        #                    noiDung='Có 30 loại thuốc, 3 loại đơn vị (viên, chai, vỹ).')
+        # quydinh3 = QuyDinh(tenQD='Tiền Khám',
+        #                    noiDung='Tiền khám 100.000 VNĐ')
+        # db.session.add_all([quydinh1, quydinh2,quydinh3])
+        # db.session.commit()
+        #
+        # # ---------------------THUOC-----------------------
         # thuoc1 = Thuoc(tenThuoc='Acetylcystein',moTa='Thuốc Acetylcystein 200mg Khapharco tiêu nhầy trong bệnh viêm phế quản, bệnh nhầy nhớt (190 viên)',
         #                ngaySX=datetime(2023, 1, 1),nhaSX='Khánh Hòa',
         #                soLuong=190,giaTien='147000',
@@ -532,16 +551,7 @@ if __name__ == "__main__":
         #                maDV_id='2')
         # db.session.add_all([thuoc1,thuoc2,thuoc3])
         # db.session.commit()
-
-        ## ---------------------DON VI------------------------
-
-        # donvi1 = DonVi(tenDV='viên')
-        # donvi2 = DonVi(tenDV='chay')
-        # donvi3 = DonVi(tenDV='vĩ')
-        #
-        # db.session.add_all([donvi1, donvi2,donvi3])
-        # db.session.commit()
-        ## ---------------------DANH SACH THUOC------------------------
+        # # ---------------------DANH SACH THUOC------------------------
         #
         # dsthuoc1 = DanhSachThuoc(maThuoc_id=1)
         # dsthuoc2 = DanhSachThuoc(maThuoc_id=2)
@@ -550,26 +560,18 @@ if __name__ == "__main__":
         #
         # db.session.add_all([dsthuoc1, dsthuoc2,dsthuoc3])
         # db.session.commit()
-
-        ## ---------------------ADD QUY DINH------------------------
-        # quydinh1 = QuyDinh(tenQD='Số lượt khám trong ngày',
-        #                    noiDung='Mỗi ngày khám tối đa 40 bệnh nhân.')
-        # quydinh2 = QuyDinh(tenQD='Quy định về loại và đơn vị thuốc',
-        #                    noiDung='Có 30 loại thuốc, 3 loại đơn vị (viên, chai, vỹ).')
-        # quydinh3 = QuyDinh(tenQD='Tiền Khám',
-        #                    noiDung='Tiền khám 100.000 VNĐ')
-        # db.session.add_all([quydinh1, quydinh2,quydinh3])
-        # db.session.commit()
-        ## ---------------------ADD PHIEUKHAMBENH------------------------
+        #
+        #
+        # # ---------------------ADD PHIEUKHAMBENH------------------------
         # phieukhambenh1 = PhieuKhamBenh(trieuChung='Triệu chứng của bệnh nhân 1',
         #                    duDoanBenh='Dự đoán bệnh cho bệnh nhân 1',
-        #                          bacsi_ID=1)
+        #                          bacsi_ID=2)
         # phieukhambenh2 = PhieuKhamBenh(trieuChung='Triệu chứng của bệnh nhân 2',
         #                          duDoanBenh='Dự đoán bệnh cho bệnh nhân 2',
-        #                          bacsi_ID=2)
+        #                          bacsi_ID=3)
         # db.session.add_all([phieukhambenh1, phieukhambenh2])
         # db.session.commit()
-        ## ---------------------HUONG DAN SU DUNG------------------------
+        # # ---------------------HUONG DAN SU DUNG------------------------
         # huongdansudung1 = HuongDanSuDung(maThuoc_id=2,
         #                                  maPhieuKham_id=1,
         #                                  lieuDung='1 – 2 viên/lần, dùng cách nhau ít nhất 4 – 6 tiếng. Chỉ sử dụng tối đa 8 viên/ngày',
@@ -580,25 +582,25 @@ if __name__ == "__main__":
         #                                  cachDung='Không được dùng đồng thời với các thuốc ho khác hoặc bất cứ thuốc nào làm giảm bài tiết đờm.')
         # db.session.add_all([huongdansudung1, huongdansudung2])
         # db.session.commit()
-
-        ## ---------------------HOADONTHANHTOAN------------------------
-        # hoadonthanhtoan1 = HoaDonThanhToan(tienKham=500000,tienThuoc=120000,tongTien=620000,thuNgan_id=7,maPhieuKham=1)
-        # hoadonthanhtoan2 = HoaDonThanhToan(tienKham=500000, tienThuoc=100000, tongTien=600000, thuNgan_id=7, maPhieuKham=2)
+        #
+        # # ---------------------HOADONTHANHTOAN------------------------
+        # hoadonthanhtoan1 = HoaDonThanhToan(tienKham=500000,tienThuoc=120000,tongTien=620000,thuNgan_id=8,maPhieuKham=1)
+        # hoadonthanhtoan2 = HoaDonThanhToan(tienKham=500000, tienThuoc=100000, tongTien=600000, thuNgan_id=9, maPhieuKham=2)
         # db.session.add_all([hoadonthanhtoan1, hoadonthanhtoan2])
         # db.session.commit()
-        ## ---------------------DANHSACHKHAMBENH------------------------
-        # dskhambenh1 = DanhSachKhamBenh(soLuongBenhNhanToiDa=40, YTa_ID=5)
-        # dskhambenh2 = DanhSachKhamBenh(soLuongBenhNhanToiDa=40, YTa_ID=5)
+        # # ---------------------DANHSACHKHAMBENH------------------------
+        # dskhambenh1 = DanhSachKhamBenh(soLuongBenhNhanToiDa=40, YTa_ID=6)
+        # dskhambenh2 = DanhSachKhamBenh(soLuongBenhNhanToiDa=40, YTa_ID=6)
         # db.session.add_all([dskhambenh1, dskhambenh2])
         # db.session.commit()
-        ## ---------------------LICHKHAMBENH------------------------
+        # # ---------------------LICHKHAMBENH------------------------
         # lichkhambenh1 = LichKhamBenh(maBN=1,dsKhamBenh_id=1)
         # lichkhambenh2 = LichKhamBenh(maBN=2,dsKhamBenh_id=2)
         #
         # db.session.add_all([lichkhambenh1, lichkhambenh2])
         # db.session.commit()
         #
-        ## ---------------------BIEUMAU------------------------
+        # # ---------------------BIEUMAU------------------------
         # bieu_mau = BieuMau(
         #     tenBM='Biểu mẫu 1',
         #     ngayKham=datetime.now(),
@@ -610,14 +612,14 @@ if __name__ == "__main__":
         # db.session.add_all([lichkhambenh1, lichkhambenh2])
         # db.session.commit()
         #
-        ## ---------------------QUANLY------------------------
+        # # ---------------------QUANLY------------------------
         # quanly1 = QuanLy(
         #     dsThuoc_id=1,  # Thay 1 bằng ID thực tế của Danh Sách Thuốc
         #     quyDinh_id=1,  # Thay 3 bằng ID thực tế của Quy Định
         #     maPhieuKham_id=1,  # Thay 4 bằng ID thực tế của Phiếu Khám Bệnh
         #     hoaDon_id=1,  # Thay 5 bằng ID thực tế của Hóa Đơn Thanh Toán
         #     danhSachKhamBenh_id=1,  # Thay 6 bằng ID thực tế của Danh Sách Khám Bệnh
-        #     admin_id=12
+        #     admin_id=1
         # )
         # quanly2 = QuanLy(
         #     dsThuoc_id=2,  # Thay 1 bằng ID thực tế của Danh Sách Thuốc
@@ -625,12 +627,12 @@ if __name__ == "__main__":
         #     maPhieuKham_id=2,  # Thay 4 bằng ID thực tế của Phiếu Khám Bệnh
         #     hoaDon_id=2,  # Thay 5 bằng ID thực tế của Hóa Đơn Thanh Toán
         #     danhSachKhamBenh_id=2,  # Thay 6 bằng ID thực tế của Danh Sách Khám Bệnh
-        #     admin_id=12
+        #     admin_id=1
         # )
         #
         # db.session.add_all([quanly1, quanly2])
         # db.session.commit()
-        ## ---------------------BIEUMAU------------------------
+        # # ---------------------BIEUMAU------------------------
         # bieumau1 = BieuMau(
         #     tenBM='Biểu mẫu 1',
         #     ngayKham=datetime(2023, 11, 12),
