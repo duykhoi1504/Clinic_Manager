@@ -1,10 +1,11 @@
 # truy xuất Csdl
-from app.models import Category, Product, User, Receipt, ReceiptDetails, NhanVien, BenhNhan
+from app.models import Category, Product, User, Receipt, ReceiptDetails, NhanVien, BenhNhan,BacSi
 import hashlib
 from app import app, db
 import cloudinary.uploader
 from flask_login import current_user
 from sqlalchemy import func
+from flask import session
 
 
 def load_categories():
@@ -32,13 +33,19 @@ def load_benhnhans(kw=None):
 
     return benhnhans.all()
 
+def load_bacsis(kw=None):
+    bacsi = BacSi.query
+    if kw:
+        bacsi = bacsi.filter(BacSi.maBN.contains((kw)))
 
-
-
-def load_nhanviens(kw=None, page=None):
+    return bacsi.all()
+def load_nhanviens(kw=None, page=None,user_role=None):
     nhanviens = NhanVien.query
     if kw:
         nhanviens = nhanviens.filter(NhanVien.hoTen.contains((kw)))
+
+    if user_role:
+        nhanviens = nhanviens.join(User).filter(User.user_role == user_role)
 
     if page:
         page = int(page)
@@ -97,12 +104,62 @@ def add_receipt(cart):
         db.session.commit()
 
 
-def count_products_by_cate():
-    return db.session.query(Category.id, Category.name, func.count(Product.id)) \
-        .join(Product, Product.Category_ID == Category.id, isouter=True).group_by(Category.id).all()
 
 
 
+#########################
+def save_benhnhan_data_to_session(hoTen, ngaySinh, maCCCD, diaChi, email, soDienThoai, tienSuBenh, sex):
+    if 'benhnhan_data' not in session:
+        session['benhnhan_data'] = {}
+    benhnhan_data = session['benhnhan_data']
+
+    # Kiểm tra xem maCCCD đã tồn tại trong cả database và session hay chưa
+    existing_benhnhan = BenhNhan.query.filter_by(maCCCD=maCCCD).first()
+    maCCCD_in_session = maCCCD in benhnhan_data
+
+    if existing_benhnhan or maCCCD_in_session:
+        return False  # Báo hiệu trùng mã CCCD
+    benhnhan_data[maCCCD] = {
+        'hoTen': hoTen,
+        'ngaySinh': ngaySinh,
+        'maCCCD': maCCCD,
+        'diaChi': diaChi,
+        'email': email,
+        'soDienThoai': soDienThoai,
+        'tienSuBenh': tienSuBenh,
+        'sex': sex
+    }
+    return True
+
+#--------------------KIỂM TRA NHẬP DỮ LIỆU BỆNH NHÂN---------------------
+# Hàm để xác nhận và nhập vào cơ sở dữ liệu
+def confirm_benhnhan_and_insert_to_database():
+    benhnhan_data = session.get('benhnhan_data', {})
+
+    if benhnhan_data:
+        # Thực hiện các kiểm tra hoặc xác nhận cần thiết
+        # Ví dụ: bạn có thể in dữ liệu ra console để kiểm tra
+        print("Dữ liệu Bệnh nhân trong session:", benhnhan_data)
+
+        # Sau khi xác nhận, bạn có thể thực hiện nhập vào cơ sở dữ liệu
+        # Thực hiện nhập vào cơ sở dữ liệu ở đây
+        for data in benhnhan_data.values():
+            # Thực hiện nhập vào cơ sở dữ liệu, ví dụ:
+            BN = BenhNhan(hoTen=data['hoTen'],
+                          ngaySinh=data['ngaySinh'],
+                          maCCCD=data['maCCCD'],
+                          diaChi=data['diaChi'],
+                          email=data['email'],
+                          soDienThoai=data['soDienThoai'],
+                          tienSuBenh=data['tienSuBenh'],
+                          sex=data['sex'])
+            db.session.add(BN)
+            db.session.commit()
+
+    # Sau khi nhập, xóa dữ liệu từ session
+    session.pop('benhnhan_data')
+
+#-----------------------------------------------------------------
 if __name__ == '__main__':
     with app.app_context():
         print(count_products_by_cate())

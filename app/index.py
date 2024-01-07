@@ -37,53 +37,14 @@ def index():
     return render_template("index.html",
                            products=products, nhanviens=nhanviens,
                            image_data=image_data,
-                           pages=math.ceil(total / app.config['PAGE_SIZE']),
-                           role=current_user.user_role if current_user.is_authenticated else None, )
+                           pages=math.ceil(total / app.config['PAGE_SIZE']))
+                           # role=current_user.user_role if current_user.is_authenticated else None, )
 
 
 @app.route("/datlichkham", methods=['post', 'get'])
 def add_benh_nhan():
     err_msg = ""
     success_message = ""
-    if request.method.__eq__('POST'):
-        hoTen = request.form.get('hoTen')
-        ngaySinh = request.form.get('ngaySinh')
-        maCCCD = request.form.get('maCCCD')
-        diaChi = request.form.get('diaChi')
-        email = request.form.get('email')
-        soDienThoai = request.form.get('soDienThoai')
-        tienSuBenh = request.form.get('tienSuBenh')
-        sex = request.form.get('sex')
-
-        if not all([hoTen, ngaySinh, maCCCD, diaChi, email, soDienThoai, tienSuBenh, sex]):
-            err_msg = "Please fill in all required fields."
-            return render_template("BenhNhan.html", err_msg=err_msg)
-        try:
-            dao.add_benhnhan(hoTen=hoTen, ngaySinh=ngaySinh, maCCCD=maCCCD, diaChi=diaChi, email=email,
-                             soDienThoai=soDienThoai, tienSuBenh=tienSuBenh, sex=sex)
-            success_message = "BenhNhan added successfully!"
-            err_msg = ""
-        except:
-            success_message = ""
-            err_msg = "he thong dang loi!"
-
-        return render_template("BenhNhan.html", err_msg=err_msg, success_message=success_message)
-    return render_template("BenhNhan.html", err_msg=err_msg, success_message=success_message)
-
-
-@app.route('/thanhtoan', methods=['post', 'get'])
-def thanhtoan():
-    return render_template("thungan.html")
-
-
-# ------------------ DANGKIKHAMTRUCTIEP----------------------
-
-@app.route('/dangkikhamtructiep', methods=['post', 'get'])
-def dangkitructiep():
-    err_msg = ""
-    success_message = ""
-    benhnhans = dao.load_benhnhans()
-
     if request.method == ('POST'):
         hoTen = request.form.get('hoTen')
         ngaySinh = request.form.get('ngaySinh')
@@ -97,27 +58,68 @@ def dangkitructiep():
         if not all([hoTen, ngaySinh, maCCCD, diaChi, email, soDienThoai, tienSuBenh, sex]):
             err_msg = "Please fill in all required fields."
 
-            return render_template("yta.html", benhnhans=benhnhans, err_msg=err_msg)
+            return render_template("BenhNhan.html", err_msg=err_msg)
         try:
-            dao.add_benhnhan(hoTen=hoTen, ngaySinh=ngaySinh, maCCCD=maCCCD, diaChi=diaChi, email=email,
-                             soDienThoai=soDienThoai, tienSuBenh=tienSuBenh, sex=sex)
-            success_message = "BenhNhan added successfully!"
-            err_msg = ""
+            isTrungCCCD = dao.save_benhnhan_data_to_session(hoTen=hoTen, ngaySinh=ngaySinh, maCCCD=maCCCD,
+                                                            diaChi=diaChi, email=email,
+                                                            soDienThoai=soDienThoai, tienSuBenh=tienSuBenh, sex=sex)
+            if isTrungCCCD:
+                dao.confirm_benhnhan_and_insert_to_database()
+                success_message = "Đăng kí thành công!"
+                err_msg = ""
+            else:
+                success_message = ""
+                err_msg = "Mã CCCD Trùng rồi"
+                return render_template("BenhNhan.html", err_msg=err_msg, success_message=success_message)
         except:
             success_message = ""
             err_msg = "he thong dang loi!"
-        return render_template("yta.html", benhnhans=benhnhans, err_msg=err_msg, success_message=success_message)
-    return render_template("yta.html", benhnhans=benhnhans, err_msg=err_msg, success_message=success_message)
+        return render_template("BenhNhan.html", err_msg=err_msg, success_message=success_message)
+    return render_template("BenhNhan.html", err_msg=err_msg, success_message=success_message)
 
 
-# @app.route('/dangkikhamtructiep/<id>', methods=['POST'])
-# def delete_benhnhan(id):
-#     benhnhan = BenhNhan.query.get(id)
-#     db.session.delete(benhnhan)
-#     db.session.commit()
-#
-#     return jsonify({'status': 'success'})
+@app.route('/thanhtoan', methods=['post', 'get'])
+def thanhtoan():
+    return render_template("thungan.html")
 
+@app.route('/dangkikhamtructiep', methods=['post', 'get'])
+def dangkitructiep():
+    err_msg = ""
+    success_message = ""
+    if request.method == ('POST'):
+        hoTen = request.form.get('hoTen')
+        ngaySinh = request.form.get('ngaySinh')
+        maCCCD = request.form.get('maCCCD')
+        diaChi = request.form.get('diaChi')
+        email = request.form.get('email')
+        soDienThoai = request.form.get('soDienThoai')
+        tienSuBenh = request.form.get('tienSuBenh')
+        sex = request.form.get('sex')
+
+        if not all([hoTen, ngaySinh, maCCCD, diaChi, email, soDienThoai, tienSuBenh, sex]):
+            err_msg = "Please fill in all required fields."
+
+            return render_template("yta.html", err_msg=err_msg)
+        try:
+            isTrungCCCD=dao.save_benhnhan_data_to_session(hoTen=hoTen, ngaySinh=ngaySinh, maCCCD=maCCCD, diaChi=diaChi, email=email,
+                             soDienThoai=soDienThoai, tienSuBenh=tienSuBenh, sex=sex)
+            if isTrungCCCD:
+                dao.confirm_benhnhan_and_insert_to_database()
+                success_message = "BenhNhan added successfully!"
+                err_msg = ""
+            else:
+                success_message = ""
+                err_msg = "Mã CCCD Trùng rồi"
+                return render_template("yta.html", err_msg=err_msg, success_message=success_message)
+        except:
+            success_message = ""
+            err_msg = "he thong dang loi!"
+        return render_template("yta.html",  err_msg=err_msg, success_message=success_message)
+    return render_template("yta.html",  err_msg=err_msg, success_message=success_message)
+##################################################
+
+
+#--------------------------Bác Sĩ---------------------------------
 @app.route('/lapphieukham', methods=['post', 'get'])
 def lapphieukham():
     return render_template("bacsi.html")
@@ -199,6 +201,9 @@ def login_admin_process():
     return redirect('/admin')
 
 
+#
+
+
 @app.route('/api/cart', methods=['post'])
 def add_cart():
     cart = session.get('cart')
@@ -265,6 +270,7 @@ def index1():
     return render_template("testhtml.html")
 
 
+#---------------------------------------------------------------------
 @app.context_processor  # trang nao cung se co du lieu nay`
 def common_resp():
     role = current_user.user_role if current_user.is_authenticated else None
@@ -272,7 +278,9 @@ def common_resp():
         'caregories': dao.load_categories(),
         'cart': utils.count_cart(session.get('cart')),
         'UserRoleEnum': UserRoleEnum,
-        'role': role
+        'role': role,
+        'benhnhans' : dao.load_benhnhans(),
+        'bacsis':dao.load_bacsis()
     }
 
 

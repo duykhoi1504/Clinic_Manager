@@ -11,7 +11,7 @@
 <!--</div>-->
 <div class="alert alert-dismissible alert-danger ">
     <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-    <strong>Oh Không!!!</strong> <a href="#" class="alert-link">Sai thông tin đăng nhập ròu</a> hãy thử lại lần nữa.
+    <strong>Oh Không!!!</strong> <a href="#" class="alert-link"> {{ err_msg }}</a> hãy thử lại lần nữa.
 </div>
 
 {% elif success_message %}
@@ -20,7 +20,7 @@
 <!--</div>-->
 <div class="alert alert-dismissible alert-success">
   <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-  <strong>Well done!</strong> Đăng kí thành công.
+  <strong>Well done!</strong>  {{ success_message }}
 </div>
 {% endif %}
 <div class="container mt-4">
