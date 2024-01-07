@@ -53,3 +53,46 @@
                         var row = button.parentNode.parentNode;
                         row.parentNode.removeChild(row);
     }
+
+
+
+
+//function addMedicine() {
+//            var maThuoc = document.getElementById("medicineName").value;
+//            var lieuDung = document.getElementById("quantity").value;
+//
+//            fetch('/api/lapphieukham', {
+//                method: "post",
+//                body: JSON.stringify({
+//                    "maThuoc": maThuoc,
+//                    "lieuDung": lieuDung
+//                }),
+//                headers: {
+//                    'Content-Type': "application/json"
+//                }
+//            })
+//            .then(function(res) {
+//                return res.json();
+//            })
+//            .then(function(data) {
+//                console.log(data);
+//
+//                // Update HTML elements based on the response
+//                var medicineListDiv = document.getElementById('medicine_list_datas');
+//                medicineListDiv.innerHTML = `
+//                    <p><strong>Mã thuốc:</strong> ${data.maThuoc}</p>
+//                    <p><strong>Tên thuốc:</strong> ${data.tenThuoc}</p>
+//                    <p><strong>Lieu dung:</strong> ${data.lieuDung}</p>
+//                `;
+//
+//                // You can also update other elements or perform additional actions
+//            })
+//            .catch(function(error) {
+//                console.error('Error:', error);
+//            });
+//        }
+//
+//        function cancelMedicine() {
+//            document.getElementById("medicineName").value = "";
+//            document.getElementById("quantity").value = "";
+//        }

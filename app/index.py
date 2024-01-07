@@ -4,7 +4,7 @@ from flask import render_template, request, redirect, session, jsonify, flash, u
 import dao, utils
 from app import app, login, db
 from flask_login import login_user, logout_user
-from app.models import NhanVien, UserRoleEnum, BenhNhan, PhieuKhamBenh, Thuoc, User, BacSi,HuongDanSuDung
+from app.models import NhanVien, UserRoleEnum, BenhNhan, PhieuKhamBenh, Thuoc, User, BacSi, HuongDanSuDung,HoaDonThanhToan
 from datetime import datetime
 from app.admin import current_user
 
@@ -81,9 +81,12 @@ def add_benh_nhan():
     return render_template("BenhNhan.html", err_msg=err_msg, success_message=success_message)
 
 
-@app.route('/thanhtoan', methods=['post', 'get'])
+@app.route('/thanhtoan', methods=['get'])
 def thanhtoan():
-    return render_template("thungan.html")
+    maPK = request.args.get('maPK')
+    phieukhambenh = dao.get_maphieukham_by_id(maPK)
+
+    return render_template("thungan.html",phieukhambenh=phieukhambenh)
 
 
 # --------------------------------DANG KI TRUC TIEP------------------------------
@@ -131,7 +134,7 @@ def dangkitructiep():
 def lapphieukham():
     err_msg = ""
     success_message = ""
-    thuocs=dao.load_thuocs()
+    thuocs = dao.load_thuocs()
     if not current_user.is_authenticated:
         # Redirect to the login page or handle unauthorized access
         return redirect('/login')  # Adjust the URL accordingly
@@ -156,54 +159,53 @@ def lapphieukham():
         # Check if the current user is logged in and is an instance of User
         # Perform a join to get the maNV attribute
 
-
         if patient:
-###
+            ###
             trieuChung = request.form.get('trieuChung')
             duDoanBenh = request.form.get('duDoanBenh')
             bacsi_ID = maNV_value
             phieu_kham = PhieuKhamBenh(trieuChung=trieuChung, duDoanBenh=duDoanBenh, bacsi_ID=bacsi_ID)
             db.session.add(phieu_kham)
             db.session.commit()
-####
+            ####
             maThuoc_id = request.form.get('maThuoc_id')
             maPhieuKham_id = phieu_kham.maPhieuKham
             lieuDung = request.form.get('lieuDung')
             # cachDung = request.form.get('cachDung')
-
-
             cachDung = ""
 
-            huongdansudung = HuongDanSuDung(maThuoc_id=maThuoc_id, maPhieuKham_id=maPhieuKham_id, lieuDung=lieuDung,cachDung=cachDung)
+            huongdansudung = HuongDanSuDung(maThuoc_id=maThuoc_id, maPhieuKham_id=maPhieuKham_id, lieuDung=lieuDung,
+                                            cachDung=cachDung)
             db.session.add(huongdansudung)
             db.session.commit()
 
 
-        return render_template("bacsi.html",thuocs=thuocs)
-    return render_template("bacsi.html",thuocs=thuocs)
+
+        return render_template("bacsi.html", thuocs=thuocs)
+    return render_template("bacsi.html", thuocs=thuocs)
 
 
-# @app.route('/api/lapphieukham', methods=['post'])
-# def add_thuoc():
-#     thuoc_cart = session.get('thuoc_cart')
-#     if thuoc_cart is None:
-#         thuoc_cart = {}
-#     data = request.json
-#     id = str(data.get("maThuoc"))
-#
-#     if id in thuoc_cart:  # san pham da co trong gio
-#         thuoc_cart[id]["quantity"] = thuoc_cart[id]["quantity"] + 1
-#     else:  # san pham chua co trong gio
-#         thuoc_cart[id] = {
-#             "id": id,
-#             "tenThuoc": data.get("tenThuoc"),
-#             "lieuDung": data.get("lieuDung"),
-#
-#         }
-#     session['cart'] = thuoc_cart
-#
-#     return jsonify(utils.count_cart(thuoc_cart))
-#
+@app.route('/api/lapphieukham', methods=['post'])
+def add_thuoc():
+    thuoc_cart = session.get('thuoc_cart')
+    if thuoc_cart is None:
+        thuoc_cart = {}
+    data = request.json
+    maThuoc = str(data.get("maThuoc"))
+
+    if maThuoc in thuoc_cart:  # san pham da co trong gio
+        thuoc_cart[maThuoc]["quantity"] = thuoc_cart[maThuoc]["quantity"] + 1
+    else:  # san pham chua co trong gio
+        thuoc_cart[maThuoc] = {
+            "maThuoc": maThuoc,
+            "tenThuoc": data.get("tenThuoc"),
+            "lieuDung": data.get("lieuDung"),
+
+        }
+    session['thuoc_cart'] = thuoc_cart
+
+    return jsonify({session['thuoc_cart']})
+
 
 @app.route('/aboutus')
 def aboutus():
@@ -285,26 +287,6 @@ def login_admin_process():
 
 
 # ---------------------
-@app.route('/api/cart', methods=['post'])
-def add_cart():
-    cart = session.get('cart')
-    if cart is None:
-        cart = {}
-    data = request.json
-    id = str(data.get("id"))
-
-    if id in cart:  # san pham da co trong gio
-        cart[id]["quantity"] = cart[id]["quantity"] + 1
-    else:  # san pham chua co trong gio
-        cart[id] = {
-            "id": id,
-            "name": data.get("name"),
-            "price": data.get("price"),
-            "quantity": 1
-        }
-    session['cart'] = cart
-
-    return jsonify(utils.count_cart(cart))
 
 
 @app.route('/api/cart/<product_id>', methods=['put'])

@@ -1,5 +1,5 @@
 # truy xuất Csdl
-from app.models import Category, Product, User, Receipt, ReceiptDetails, NhanVien, BenhNhan,BacSi,Thuoc
+from app.models import Category, Product, User, Receipt, ReceiptDetails, NhanVien, BenhNhan,BacSi,Thuoc,LichKhamBenh,PhieuKhamBenh
 import hashlib
 from app import app, db
 import cloudinary.uploader
@@ -12,6 +12,12 @@ def load_categories():
     return Category.query.all()
 def load_thuocs():
     return Thuoc.query.all()
+
+
+def get_maphieukham_by_id(id=None):
+    if id:
+
+        return PhieuKhamBenh.query.get(id)
 
 
 def load_products(kw=None, page=None):
@@ -111,6 +117,9 @@ def add_receipt(cart):
 
 #########################
 def save_benhnhan_data_to_session(hoTen, ngaySinh, maCCCD, diaChi, email, soDienThoai, tienSuBenh, sex):
+    # benhnhan_data = session.get('benhnhan_data')
+    # if benhnhan_data is None:
+    #     benhnhan_data = {}
     if 'benhnhan_data' not in session:
         session['benhnhan_data'] = {}
     benhnhan_data = session['benhnhan_data']
@@ -137,7 +146,7 @@ def save_benhnhan_data_to_session(hoTen, ngaySinh, maCCCD, diaChi, email, soDien
 # Hàm để xác nhận và nhập vào cơ sở dữ liệu
 def confirm_benhnhan_and_insert_to_database():
     benhnhan_data = session.get('benhnhan_data', {})
-
+    lichkhambenh_data=session.get('lichkhambenh_data',{})
     if benhnhan_data:
         # Thực hiện các kiểm tra hoặc xác nhận cần thiết
         # Ví dụ: bạn có thể in dữ liệu ra console để kiểm tra
@@ -157,6 +166,7 @@ def confirm_benhnhan_and_insert_to_database():
                           sex=data['sex'])
             db.session.add(BN)
             db.session.commit()
+
 
     # Sau khi nhập, xóa dữ liệu từ session
     session.pop('benhnhan_data')
