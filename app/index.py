@@ -4,7 +4,7 @@ from flask import render_template, request, redirect, session, jsonify, flash, u
 import dao, utils
 from app import app, login, db
 from flask_login import login_user, logout_user
-from app.models import NhanVien, UserRoleEnum, BenhNhan
+from app.models import NhanVien, UserRoleEnum, BenhNhan, PhieuKhamBenh, Thuoc, User, BacSi,HuongDanSuDung
 from datetime import datetime
 from app.admin import current_user
 
@@ -38,9 +38,12 @@ def index():
                            products=products, nhanviens=nhanviens,
                            image_data=image_data,
                            pages=math.ceil(total / app.config['PAGE_SIZE']))
-                           # role=current_user.user_role if current_user.is_authenticated else None, )
+    # role=current_user.user_role if current_user.is_authenticated else None, )
 
 
+# -------------------------------Bác Sĩ--------------------------
+#
+# --------------------------------DAT LICH KHAM------------------------------
 @app.route("/datlichkham", methods=['post', 'get'])
 def add_benh_nhan():
     err_msg = ""
@@ -82,6 +85,8 @@ def add_benh_nhan():
 def thanhtoan():
     return render_template("thungan.html")
 
+
+# --------------------------------DANG KI TRUC TIEP------------------------------
 @app.route('/dangkikhamtructiep', methods=['post', 'get'])
 def dangkitructiep():
     err_msg = ""
@@ -101,8 +106,9 @@ def dangkitructiep():
 
             return render_template("yta.html", err_msg=err_msg)
         try:
-            isTrungCCCD=dao.save_benhnhan_data_to_session(hoTen=hoTen, ngaySinh=ngaySinh, maCCCD=maCCCD, diaChi=diaChi, email=email,
-                             soDienThoai=soDienThoai, tienSuBenh=tienSuBenh, sex=sex)
+            isTrungCCCD = dao.save_benhnhan_data_to_session(hoTen=hoTen, ngaySinh=ngaySinh, maCCCD=maCCCD,
+                                                            diaChi=diaChi, email=email,
+                                                            soDienThoai=soDienThoai, tienSuBenh=tienSuBenh, sex=sex)
             if isTrungCCCD:
                 dao.confirm_benhnhan_and_insert_to_database()
                 success_message = "BenhNhan added successfully!"
@@ -114,16 +120,90 @@ def dangkitructiep():
         except:
             success_message = ""
             err_msg = "he thong dang loi!"
-        return render_template("yta.html",  err_msg=err_msg, success_message=success_message)
-    return render_template("yta.html",  err_msg=err_msg, success_message=success_message)
+        return render_template("yta.html", err_msg=err_msg, success_message=success_message)
+    return render_template("yta.html", err_msg=err_msg, success_message=success_message)
+
+
 ##################################################
 
-
-#--------------------------Bác Sĩ---------------------------------
+# --------------------------Bác Sĩ---------------------------------
 @app.route('/lapphieukham', methods=['post', 'get'])
 def lapphieukham():
-    return render_template("bacsi.html")
+    err_msg = ""
+    success_message = ""
+    thuocs=dao.load_thuocs()
+    if not current_user.is_authenticated:
+        # Redirect to the login page or handle unauthorized access
+        return redirect('/login')  # Adjust the URL accordingly
 
+    query = (
+        db.session.query(User, NhanVien)
+        .join(NhanVien, User.id == NhanVien.user_id)
+        .join(BacSi, BacSi.maNV == NhanVien.maNV)
+        .filter(User.id == current_user.id)
+        .first()
+    )
+    if query:
+        user_instance, nhanvien_instance = query
+        maNV_value = nhanvien_instance.maNV
+        print(user_instance)
+        print(nhanvien_instance.email)
+        print(maNV_value)
+
+    if request.method == "POST":
+        maCCCD = request.form.get('maCCCD')
+        patient = BenhNhan.query.filter_by(maCCCD=maCCCD).first()
+        # Check if the current user is logged in and is an instance of User
+        # Perform a join to get the maNV attribute
+
+
+        if patient:
+###
+            trieuChung = request.form.get('trieuChung')
+            duDoanBenh = request.form.get('duDoanBenh')
+            bacsi_ID = maNV_value
+            phieu_kham = PhieuKhamBenh(trieuChung=trieuChung, duDoanBenh=duDoanBenh, bacsi_ID=bacsi_ID)
+            db.session.add(phieu_kham)
+            db.session.commit()
+####
+            maThuoc_id = request.form.get('maThuoc_id')
+            maPhieuKham_id = phieu_kham.maPhieuKham
+            lieuDung = request.form.get('lieuDung')
+            # cachDung = request.form.get('cachDung')
+
+
+            cachDung = ""
+
+            huongdansudung = HuongDanSuDung(maThuoc_id=maThuoc_id, maPhieuKham_id=maPhieuKham_id, lieuDung=lieuDung,cachDung=cachDung)
+            db.session.add(huongdansudung)
+            db.session.commit()
+
+
+        return render_template("bacsi.html",thuocs=thuocs)
+    return render_template("bacsi.html",thuocs=thuocs)
+
+
+# @app.route('/api/lapphieukham', methods=['post'])
+# def add_thuoc():
+#     thuoc_cart = session.get('thuoc_cart')
+#     if thuoc_cart is None:
+#         thuoc_cart = {}
+#     data = request.json
+#     id = str(data.get("maThuoc"))
+#
+#     if id in thuoc_cart:  # san pham da co trong gio
+#         thuoc_cart[id]["quantity"] = thuoc_cart[id]["quantity"] + 1
+#     else:  # san pham chua co trong gio
+#         thuoc_cart[id] = {
+#             "id": id,
+#             "tenThuoc": data.get("tenThuoc"),
+#             "lieuDung": data.get("lieuDung"),
+#
+#         }
+#     session['cart'] = thuoc_cart
+#
+#     return jsonify(utils.count_cart(thuoc_cart))
+#
 
 @app.route('/aboutus')
 def aboutus():
@@ -204,6 +284,7 @@ def login_admin_process():
 #
 
 
+# ---------------------
 @app.route('/api/cart', methods=['post'])
 def add_cart():
     cart = session.get('cart')
@@ -270,7 +351,7 @@ def index1():
     return render_template("testhtml.html")
 
 
-#---------------------------------------------------------------------
+# ---------------------------------------------------------------------
 @app.context_processor  # trang nao cung se co du lieu nay`
 def common_resp():
     role = current_user.user_role if current_user.is_authenticated else None
@@ -279,8 +360,9 @@ def common_resp():
         'cart': utils.count_cart(session.get('cart')),
         'UserRoleEnum': UserRoleEnum,
         'role': role,
-        'benhnhans' : dao.load_benhnhans(),
-        'bacsis':dao.load_bacsis()
+        'benhnhans': dao.load_benhnhans(),
+        'bacsis': dao.load_bacsis()
+        # 'numberOfVicTimInDay':
     }
 
 

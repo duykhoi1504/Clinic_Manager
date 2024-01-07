@@ -3,10 +3,13 @@
 
 {% block content %}
 
+
+<!---------------->
+
 <section class="mt-20" style="background-color: #eee;margin:90px">
     <div class="container py-5 ">
         <div class="row">
-            <div class="col-4">
+            <div>
                 <div class="card">
                     <div class="card-header">
                         <h5 class="card-title">Form tạo phiếu khám</h5>
@@ -14,31 +17,78 @@
                     <div class="card-body">
                         <!-- Your form goes here -->
                         <div style="margin-bottom:12px">
-                            <label>Tên bác sĩ: <span class="badge bg-primary"> {{current_user.name}}</span>
+                            <label>Tên bác sĩ: <span class="badge bg-primary"> KHOI</span>
                             </label>
                         </div>
                         <!------------------------------------------------------------------>
-                        <form method="post">
+                        <form method="post" class="row">
                             <!--CCCD -->
-                            <div class="mb-3">
-                                <label class="form-label">CCDD</label>
-                                <input name="maCCCD" type="number" class="form-control"
-                                       placeholder="nhập mã căn cước công dân...">
+                            <div class="col-4">
+                                <div class="mb-3">
+                                    <label class="form-label">CCDD</label>
+                                    <input name="maCCCD" type="number" class="form-control"
+                                           placeholder="nhập mã căn cước công dân...">
+                                </div>
+                                <!--TRIEU_CHUNG -->
+                                <div class="mb-3">
+                                    <label class="form-label">Triệu chứng</label>
+                                    <textarea class="form-control" rows="3" name="trieuChung"
+                                              placeholder="Triệu chứng"></textarea></div>
+
+                                <!--BENH_CHUAN_DOAN -->
+
+                                <div class="mb-3">
+                                    <label class="form-label">Bệnh chuẩn đoán</label>
+                                    <textarea class="form-control" rows="3" name="duDoanBenh"
+                                              placeholder="Bệnh chuẩn đoán"></textarea>
+                                </div>
                             </div>
-                            <!--TRIEU_CHUNG -->
-                            <div class="mb-3">
-                                <label class="form-label">Triệu chứng</label>
-                                <textarea class="form-control" rows="3" name="trieuChung"
-                                          placeholder="Triệu chứng"></textarea></div>
+                            <!--=========================================================-->
+                            <div class="card col-8">
+                                <div class="card-header">
+                                    <div class="card-title">Danh sách thuốc cần dùng</div>
+                                </div>
+                                <!-----------------------------thêm thuốc------------------------->
+                                <div id="medicineForm">
+                                    <label for="medicineName">Tên thuốc:</label>
+                                    <select name="maThuoc_id" id="medicineName">
+                                        {% for c in thuocs %}
+                                        <option value="{{c.maThuoc}}">{{c.tenThuoc}}</option>
+                                        {% endfor %}
+                                    </select>
 
-                            <!--BENH_CHUAN_DOAN -->
+                                    <!--                    <label for="medicineDescription">Mô tả thuốc:</label>-->
+                                    <!--                    <input type="text" id="medicineDescription" name="medicineDescription" required>-->
 
-                            <div class="mb-3">
-                                <label class="form-label">Bệnh chuẩn đoán</label>
-                                <textarea class="form-control" rows="3" name="duDoanBenh"
-                                          placeholder="Bệnh chuẩn đoán"></textarea>
+                                    <label for="quantity">Số lượng</label>
+                                    <input type="number" id="quantity" name="lieuDung" required>
+
+                                    <button type="button" onclick="addMedicine()">Thêm</button>
+                                    <button type="button" onclick="cancelMedicine()">Hủy Thuốc</button>
+                                </div>
+                                <!-----------------------------thiển thị danh sách------------------------->
+
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table class="table table-striped table-bordered table-hover model-list">
+                                            <thead class="bg-thead">
+                                            <tr>
+                                                <th>STT</th>
+                                                <th>Tên thuốc</th>
+                                                <th>Đơn vị</th>
+                                                <th>Số lượng</th>
+                                                <th>Cách dùng</th>
+                                                <th>Thao tác</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody id="medicine_list_datas"></tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <!----------------------------------------------->
+
+
                             </div>
-
                             <!-- Add more form fields as needed -->
                             <!--                        <button type="submit" class="btn btn-primary">Submit</button>-->
                             <!-- Button trigger modal -->
@@ -53,77 +103,15 @@
                     </div>
                 </div>
             </div>
-            <!---->
-            <div class="card col-8">
-                <div class="card-header">
-                    <div class="card-title">Danh sách thuốc cần dùng</div>
+            <!---------------------------!--THEM THUOC----------------------------->
 
-                </div>
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <table class="table table-striped table-bordered table-hover model-list">
-                            <thead class="bg-thead">
-                            <tr>
-                                <th>STT</th>
-                                <th>Tên thuốc</th>
-                                <th>Đơn vị</th>
-                                <th>Số lượng</th>
-                                <th>Cách dùng</th>
-
-                            </tr>
-                            </thead>
-                            <tbody id="medicine_list_datas">
-
-                            <tr>
-                                <td>1</td>
-                                <td>2</td>
-                                <td>3</td>
-                                <td>4</td>
-                                <td>5</td>
-
-                            </tr>
-
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-<!----------------------------------------------->
-                <div class="card-header">
-                    <div class="card-title">Lịch sử khám bệnh nhân</div>
-
-                </div>
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <table class="table table-striped table-bordered table-hover model-list">
-                            <thead class="bg-thead">
-                            <tr>
-                                <th>Thời gian</th>
-                                <th>Đơn vị</th>
-                                <th>Số lượng</th>
-                                <th>Cách dùng</th>
-
-                            </tr>
-                            </thead>
-                            <tbody id="12">
-
-                            <tr>
-                                <td>1</td>
-                                <td>2</td>
-                                <td>3</td>
-                                <td>4</td>
-                                <td>5</td>
-
-                            </tr>
-
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-<!--                --->
-
-            </div>
 
         </div>
     </div>
 </section>
+
+
+<!--Tim Kiem Thong tin benh nhan-->
+
 {% endblock %}
+

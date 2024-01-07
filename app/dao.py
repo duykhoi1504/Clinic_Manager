@@ -1,5 +1,5 @@
 # truy xuất Csdl
-from app.models import Category, Product, User, Receipt, ReceiptDetails, NhanVien, BenhNhan,BacSi
+from app.models import Category, Product, User, Receipt, ReceiptDetails, NhanVien, BenhNhan,BacSi,Thuoc
 import hashlib
 from app import app, db
 import cloudinary.uploader
@@ -10,6 +10,8 @@ from flask import session
 
 def load_categories():
     return Category.query.all()
+def load_thuocs():
+    return Thuoc.query.all()
 
 
 def load_products(kw=None, page=None):
@@ -158,6 +160,13 @@ def confirm_benhnhan_and_insert_to_database():
 
     # Sau khi nhập, xóa dữ liệu từ session
     session.pop('benhnhan_data')
+
+
+
+
+def count_products_by_cate():
+    return db.session.query(Category.id, Category.name, func.count(Product.id))\
+            .join(Product, Product.Category_ID == Category.id, isouter=True).group_by(Category.id).all()
 
 #-----------------------------------------------------------------
 if __name__ == '__main__':
