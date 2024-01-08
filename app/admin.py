@@ -1,7 +1,7 @@
 from flask_admin.contrib.sqla import ModelView
 from flask_admin import Admin, BaseView, expose, AdminIndexView
 from app import app, db, dao
-from app.models import Category, Product, NhanVien, BenhNhan, DanhSachKhamBenh, Thuoc, User
+from app.models import Category, Product, NhanVien, BenhNhan, DanhSachKhamBenh, Thuoc, User,QuyDinh
 
 from flask_login import logout_user, current_user
 from flask import redirect, url_for,request
@@ -32,7 +32,7 @@ class MyAdminIndex(AdminIndexView):
                            statsThang=statsThang,tansuatsudungthuoc=tansuatsudungthuoc)
 
 
-admin = Admin(app=app, name="Quan ly ban hang", template_mode="bootstrap4", index_view=MyAdminIndex())
+admin = Admin(app=app, name="Quản phòng khám", template_mode="bootstrap4", index_view=MyAdminIndex())
 
 
 # XAC THUC TAI KHOAN
@@ -193,6 +193,13 @@ class MyThuNganView(BaseView):
     can_export = True
     can_view_details = True
 
+class MyQuyDinhView(AuthenticatedAdmin):
+    column_display_pk = True
+    column_list = ['maQD', 'tenQD', 'noiDung']
+    column_searchable_list = ['tenQD']
+    column_filters = ['maQD', 'tenQD']
+    can_export = True
+    can_view_details = True
 
 admin.add_view(MyDanhSachKhamBenhView(DanhSachKhamBenh, db.session, name='Danh Sách Khám Bệnh'))
 admin.add_view(MyBenhNhanView(BenhNhan, db.session, name='bệnh nhân'))
@@ -202,6 +209,6 @@ admin.add_view(MyUserView(User, db.session))
 # admin.add_view(MyCategoryVIew(Category, db.session))
 # admin.add_view(MyProductView(Product, db.session))
 # admin.add_view(MyStatsView(name='Thống kê báo cáo'))
-
+admin.add_view(MyQuyDinhView(QuyDinh, db.session,name='Quy định'))
 # admin.add_view(MyTacVuNhanVienView(name='Thông tin'))
 admin.add_view(MyLogoutView(name='Đăng xuất'))

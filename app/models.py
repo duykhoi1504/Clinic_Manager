@@ -406,7 +406,7 @@ if __name__ == "__main__":
         #     soDienThoai="1234567890",
         #     sex=Sex.MALE,
         #     ngayVaoLam=datetime.now(),
-        #     avatar="https://hoanmy.com/wp-content/uploads/2023/05/HMSGC-Bs-Phan-Thanh-Tuoi.jpg",
+        #     avatar="https://hoanmy.com/wp-content/uploads/2023/05/HMDN-XET-NGHIEM-PHAM-THI-THANH-HUYEN-9628.jpg",
         #     user_id=2
         #
         # )
@@ -445,9 +445,51 @@ if __name__ == "__main__":
         #     ngayVaoLam=datetime(2020, 2, 1),
         #     avatar="https://hoanmy.com/wp-content/uploads/2023/05/HMSGC-Bs-Thach-Minh-Huy.jpg"
         # )
-        #
-        #
-        # db.session.add_all([d1, d2, d3, d4])
+        # d5 = BacSi(
+        #     hoTen="Thạch Minh Vũ",
+        #     ngaySinh=datetime(2003, 1, 1),
+        #     maCCCD="1234525015",
+        #     diaChi="Bến tre",
+        #     email="ThanhDat@example.com",
+        #     soDienThoai="1234567891",
+        #     sex=Sex.MALE,
+        #     ngayVaoLam=datetime(2020, 2, 1),
+        #     avatar="https://hoanmy.com/wp-content/uploads/2023/05/HMDN-NOI-NGUYEN-ANH-TUYEN.jpg"
+        # )
+        # d6 = BacSi(
+        #     hoTen="Thạch Anh Tuyền",
+        #     ngaySinh=datetime(2003, 1, 1),
+        #     maCCCD="1223015",
+        #     diaChi="Bến tre",
+        #     email="ThanhDat@example.com",
+        #     soDienThoai="12312391",
+        #     sex=Sex.MALE,
+        #     ngayVaoLam=datetime(2020, 2, 1),
+        #     avatar="https://hoanmy.com/wp-content/uploads/2023/05/HMDN-CMO-Tran-Minh-Nghia.jpg"
+        # )
+        # d7 = BacSi(
+        #     hoTen="Thạch Anh Tuyền",
+        #     ngaySinh=datetime(2003, 1, 1),
+        #     maCCCD="232751315",
+        #     diaChi="Bến Bình Đại",
+        #     email="ThanhDat@example.com",
+        #     soDienThoai="1233891",
+        #     sex=Sex.MALE,
+        #     ngayVaoLam=datetime(2021, 2, 1),
+        #     avatar="https://hoanmy.com/wp-content/uploads/2023/05/DNIH-BSCKII.-Tran-Van-Thuan-Truong-khoa-noi-kiem-Pho-giam-doc-chuyen-mon-BV.jpg"
+        # )
+        # d8 = BacSi(
+        #     hoTen="Thạch Anh Tuyền",
+        #     ngaySinh=datetime(2003, 1, 1),
+        #     maCCCD="233220065",
+        #     diaChi="Bến Bình Đại",
+        #     email="ThanhDat@example.com",
+        #     soDienThoai="123267891",
+        #     sex=Sex.MALE,
+        #     ngayVaoLam=datetime(2021, 2, 1),
+        #     avatar="https://hoanmy.com/wp-content/uploads/2023/05/HMMH-Phan-Van-Hung.jpg"
+        # )
+        # db.session.add_all([d1, d2, d3, d4,d5, d6, d7, d8])
         # db.session.commit()
         # # ---------------------ADD YTA------------------------
         # yta1 = YTa(
