@@ -1,11 +1,38 @@
 # truy xuất Csdl
-from app.models import Category, Product, User, Receipt, ReceiptDetails, NhanVien, BenhNhan,BacSi,Thuoc,LichKhamBenh,PhieuKhamBenh
+from app.models import (Category, Product, User,
+                        Receipt, ReceiptDetails,
+                        NhanVien, BenhNhan,
+                        BacSi,Thuoc,PhieuKhamBenh,HuongDanSuDung,HoaDonThanhToan,DonVi,DanhSachKhamBenh)
 import hashlib
 from app import app, db
 import cloudinary.uploader
 from flask_login import current_user
-from sqlalchemy import func
-from flask import session
+from sqlalchemy import func,extract
+from flask import session,request
+
+
+#
+def bao_cao_doanh_thu_theo_thang(nam, thang):
+    result = (
+        db.session.query(
+            extract('month', PhieuKhamBenh.ngayLap).label('Thang'),
+            func.count(func.distinct(BenhNhan.maBN)).label('SoBenhNhan'),
+            func.sum(HoaDonThanhToan.tienKham + HoaDonThanhToan.tienThuoc).label('DoanhThu'),
+            func.avg(HoaDonThanhToan.tienKham + HoaDonThanhToan.tienThuoc).label('TrungBinhDoanhThu'),
+            func.min(HoaDonThanhToan.tienKham + HoaDonThanhToan.tienThuoc).label('DoanhThuMin'),
+            func.max(HoaDonThanhToan.tienKham + HoaDonThanhToan.tienThuoc).label('DoanhThuMax')
+        )
+        .join(DanhSachKhamBenh, PhieuKhamBenh.maPhieuKham == DanhSachKhamBenh.phieukhambenh_id, isouter=True)
+        .join(HoaDonThanhToan, PhieuKhamBenh.maPhieuKham == HoaDonThanhToan.maPhieuKham, isouter=True)
+        .join(BenhNhan, DanhSachKhamBenh.maBN_ID == BenhNhan.maBN, isouter=True)
+        .filter(extract('year', PhieuKhamBenh.ngayLap) == nam, extract('month', PhieuKhamBenh.ngayLap) == thang)
+        .group_by('Thang')
+        .order_by('Thang')
+        .all()
+    )
+
+    return result
+#
 
 
 def load_categories():
@@ -170,6 +197,7 @@ def confirm_benhnhan_and_insert_to_database():
 
     # Sau khi nhập, xóa dữ liệu từ session
     session.pop('benhnhan_data')
+
 
 
 

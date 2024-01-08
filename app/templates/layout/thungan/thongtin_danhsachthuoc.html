@@ -4,6 +4,9 @@
             <div class="card-title">Danh sách thuốc</div>
             <div class="card-category">Thông tin thuốc được liệt kê từ bác sỹ</div>
         </div>
+        <div>
+            <h1>{{hoadon.trangThai}}</h1>
+        </div>
         <div class="card-body">
             <div class="table-responsive">
                 <table class="table table-striped table-bordered table-hover model-list">
@@ -18,16 +21,20 @@
                     </tr>
                     </thead>
                     <tbody id="medicine_list_datas">
-
+                    {% for c ,d in thuocs %}
                     <tr>
-                        <td>1</td>
-                        <td>2</td>
-                        <td>3</td>
-                        <td>4</td>
-                        <td>5</td>
-                        <td>6</td>
+                        <td>{{c.maThuoc}}</td>
+                        <td>{{c.tenThuoc}}</td>
+                        <td>{{d.tenDV}}</td>
+                        {% for e ,f in thuoc_va_lieu_dung %}
+                        {% if e.maThuoc==c.maThuoc %}
+                        <td>{{f.lieuDung}}</td>
+                        {% endif %}
+                        {% endfor %}
+                        <td>{{c.giaTien}}</td>
+                        <td>{{c.giaTien*2}}</td>
                     </tr>
-
+                    {% endfor %}
                     </tbody>
                 </table>
             </div>

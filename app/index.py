@@ -4,10 +4,10 @@ from flask import render_template, request, redirect, session, jsonify, flash, u
 import dao, utils
 from app import app, login, db
 from flask_login import login_user, logout_user
-from app.models import NhanVien, UserRoleEnum, BenhNhan, PhieuKhamBenh, Thuoc, User, BacSi, HuongDanSuDung,HoaDonThanhToan
+from app.models import NhanVien, UserRoleEnum, BenhNhan, PhieuKhamBenh, Thuoc,DonVi, User, BacSi, HuongDanSuDung,HoaDonThanhToan
 from datetime import datetime
 from app.admin import current_user
-
+from sqlalchemy import func
 
 @app.route("/")
 def index():
@@ -16,7 +16,10 @@ def index():
     cates = dao.load_categories()
     products = dao.load_products(kw=kw, page=page)
     nhanviens = dao.load_nhanviens(kw=kw, page=page)
-
+    result=dao.bao_cao_doanh_thu_theo_thang(2016,4)
+    for row in result:
+        print(
+            f"| {row.Thang:5} | {row.SoBenhNhan:13} | {row.DoanhThu:9} | {row.TrungBinhDoanhThu:11} | {row.DoanhThuMin:3} | {row.DoanhThuMax:3} |")
     image_data = [
         {'url': 'https://hoanmy.com/wp-content/uploads/2023/12/dai-thao-duong.png',
          'title': 'Những biến chứng nguy hiểm của đái tháo đường và cách phòng ngừa',
@@ -83,10 +86,58 @@ def add_benh_nhan():
 
 @app.route('/thanhtoan', methods=['get'])
 def thanhtoan():
-    maPK = request.args.get('maPK')
-    phieukhambenh = dao.get_maphieukham_by_id(maPK)
 
-    return render_template("thungan.html",phieukhambenh=phieukhambenh)
+    maPK = request.args.get('maPK')
+    if maPK:
+        phieukhambenh = dao.get_maphieukham_by_id(maPK)
+    else:
+        phieukhambenh = dao.get_maphieukham_by_id(1)
+
+    benhnhan= BenhNhan.query.get(phieukhambenh.maBN)
+    bacsi=BacSi.query.get(phieukhambenh.bacsi_ID)
+    hoadon=HoaDonThanhToan.query.get(phieukhambenh.maPhieuKham)
+    # huongdansudung = HuongDanSuDung.query.get(phieukhambenh.maPhieuKham)
+
+    # thuocs = db.session.query(Thuoc).join(HuongDanSuDung, Thuoc.maThuoc == HuongDanSuDung.maThuoc_id) \
+    #     .filter(HuongDanSuDung.maPhieuKham_id == phieukhambenh.maPhieuKham).all()
+
+    lieuDung_total = (
+            db.session.query(func.sum(HuongDanSuDung.lieuDung))
+            .filter(HuongDanSuDung.maPhieuKham_id == phieukhambenh.maPhieuKham)
+            .scalar() or 0  # Nếu không có dữ liệu, trả về 0
+    )
+    # Tính tổng tiền khám
+    tien_kham = db.session.query(func.sum(HoaDonThanhToan.tienKham)) \
+                    .filter(HoaDonThanhToan.maPhieuKham == phieukhambenh.maPhieuKham).scalar() or 0
+
+    # Tính tổng tiền thuốc
+    tien_thuoc = db.session.query(func.sum(Thuoc.giaTien * HuongDanSuDung.lieuDung)) \
+                     .join(HuongDanSuDung, Thuoc.maThuoc == HuongDanSuDung.maThuoc_id) \
+                     .filter(HuongDanSuDung.maPhieuKham_id == phieukhambenh.maPhieuKham).scalar() or 0
+
+    thuocs = db.session.query(Thuoc, DonVi).join(DonVi, Thuoc.maDV_id == DonVi.maDV) \
+        .join(HuongDanSuDung, Thuoc.maThuoc == HuongDanSuDung.maThuoc_id) \
+        .filter(HuongDanSuDung.maPhieuKham_id == phieukhambenh.maPhieuKham).all()
+
+    thuoc_va_lieu_dung = db.session.query(Thuoc, HuongDanSuDung) \
+        .join(HuongDanSuDung, Thuoc.maThuoc == HuongDanSuDung.maThuoc_id) \
+        .filter(HuongDanSuDung.maPhieuKham_id == phieukhambenh.maPhieuKham) \
+        .all()
+
+    for thuoc, donvi in thuocs:
+        print(f"Tên thuốc:{thuoc.maThuoc} ,{thuoc.tenThuoc}, Đơn vị: {donvi.tenDV}")
+    for thuoc, huong_dan in thuoc_va_lieu_dung:
+        print(f"Tên thuốc:{thuoc.maThuoc} ,{thuoc.tenThuoc}, Liều dùng: {huong_dan.lieuDung}, Cách dùng: {huong_dan.cachDung}")
+
+
+
+    # for thuoc in thuocs:
+    #     print(thuoc.tenThuoc,thuoc.maThuoc)
+    return render_template("thungan.html",phieukhambenh=phieukhambenh,benhnhan=benhnhan,
+                           bacsi=bacsi,thuocs=thuocs,lieuDung_total=lieuDung_total,
+                           tien_thuoc=tien_thuoc,tien_kham=tien_kham,
+                           thuoc_va_lieu_dung=thuoc_va_lieu_dung,
+                           hoadon=hoadon)
 
 
 # --------------------------------DANG KI TRUC TIEP------------------------------
@@ -164,14 +215,14 @@ def lapphieukham():
             trieuChung = request.form.get('trieuChung')
             duDoanBenh = request.form.get('duDoanBenh')
             bacsi_ID = maNV_value
-            phieu_kham = PhieuKhamBenh(trieuChung=trieuChung, duDoanBenh=duDoanBenh, bacsi_ID=bacsi_ID)
+            maBN=patient.maBN
+            phieu_kham = PhieuKhamBenh(trieuChung=trieuChung, duDoanBenh=duDoanBenh, bacsi_ID=bacsi_ID,maBN=maBN)
             db.session.add(phieu_kham)
             db.session.commit()
             ####
             maThuoc_id = request.form.get('maThuoc_id')
             maPhieuKham_id = phieu_kham.maPhieuKham
             lieuDung = request.form.get('lieuDung')
-            # cachDung = request.form.get('cachDung')
             cachDung = ""
 
             huongdansudung = HuongDanSuDung(maThuoc_id=maThuoc_id, maPhieuKham_id=maPhieuKham_id, lieuDung=lieuDung,
@@ -180,31 +231,33 @@ def lapphieukham():
             db.session.commit()
 
 
-
         return render_template("bacsi.html", thuocs=thuocs)
     return render_template("bacsi.html", thuocs=thuocs)
 
 
-@app.route('/api/lapphieukham', methods=['post'])
-def add_thuoc():
-    thuoc_cart = session.get('thuoc_cart')
-    if thuoc_cart is None:
-        thuoc_cart = {}
-    data = request.json
-    maThuoc = str(data.get("maThuoc"))
-
-    if maThuoc in thuoc_cart:  # san pham da co trong gio
-        thuoc_cart[maThuoc]["quantity"] = thuoc_cart[maThuoc]["quantity"] + 1
-    else:  # san pham chua co trong gio
-        thuoc_cart[maThuoc] = {
-            "maThuoc": maThuoc,
-            "tenThuoc": data.get("tenThuoc"),
-            "lieuDung": data.get("lieuDung"),
-
-        }
-    session['thuoc_cart'] = thuoc_cart
-
-    return jsonify({session['thuoc_cart']})
+# @app.route('/api/lapphieukham', methods=['post'])
+# def add_thuoc_to_list():
+#     thuocs = session.get('thuocs')
+#     if thuocs is None:
+#         thuocs = {}
+#     data = request.json()
+#     maThuoc=str(data.get("maThuoc"))
+#
+#     if maThuoc in thuocs:
+#         thuocs[maThuoc]['soLuong'] = thuocs[maThuoc]['soLuong'] + 1
+#     else:
+#         thuocs[maThuoc] = {
+#             "maThuoc": maThuoc,
+#             "tenThuoc": data.get("tenThuoc"),
+#             "giaTien": data.get("giaTien"),
+#             "quantity": data.get("quantity"),
+#         }
+#
+#     session['thuocs'] = thuocs
+#     return jsonify({
+#         'tienKham': 100,
+#         "tongTien": 100
+#     })
 
 
 @app.route('/aboutus')
@@ -283,10 +336,28 @@ def login_admin_process():
     return redirect('/admin')
 
 
-#
+#-------------------------------------------
+@app.route('/api/cart', methods=['post'])
+def add_cart():
+    cart = session.get('cart')
+    if cart is None:
+        cart = {}
+    data = request.json
+    id = str(data.get("id"))
 
+    if id in cart:  # san pham da co trong gio
+        cart[id]["quantity"] = cart[id]["quantity"]+1
+    else:  # san pham chua co trong gio
+        cart[id] = {
+            "id": id,
+            "name": data.get("name"),
+            "price": data.get("price"),
+            "quantity": 1
+        }
+    session['cart'] = cart
 
-# ---------------------
+    return jsonify(utils.count_cart(cart))
+
 
 
 @app.route('/api/cart/<product_id>', methods=['put'])
@@ -322,7 +393,7 @@ def pay():
         del session['cart']
         return jsonify({'status': 200})
 
-
+#-------------------------------------------
 @app.route('/cart')
 def cart_list():
     return render_template('cart.html')

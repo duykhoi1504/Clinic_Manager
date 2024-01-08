@@ -1,3 +1,26 @@
+//function addDanhSachThuoc(maThuoc, tenThuoc,giaTien,soLuong){
+//    fetch('/api/lapphieukham', {
+//        method: "post",
+//        body: JSON.stringify({
+//            "maThuoc":maThuocid,
+//            "tenThuoc": tenThuoc,
+//            "giaTien": giaTien,
+//            'soLuong':soLuong
+//        }),
+//        headers:{
+//            'Content-Type': "application/json"
+//        }
+//    }).then(function(res){
+//        return res.json();
+//    }).then(function(data){
+//    console.info(data)
+//    let c = document.getElementsByClassName('cart-counter');
+//    for (let d of c)
+//        d.innerText = data.total_quantity
+//    })
+//}
+
+
 function addToCart(id, name, price){
     fetch('/api/cart', {
         method: "post",
@@ -36,25 +59,6 @@ function updateCart(id, obj){
                 d.innerText = data.total_quantity
     })
 }
-
-//function deleteBenhNhan(benhnhanId) {
-//    if (confirm("Bạn có chắc chắn muốn xóa bệnh nhân này?")) {
-//        // Sử dụng AJAX để gửi yêu cầu xóa
-//        fetch(`/delete_benhnhan/${benhnhanId}`, {
-//            method: 'POST',
-//        })
-//        .then(response => response.json())
-//        .then(data => {
-//            if (data.status === 'success') {
-//                // Xóa hàng từ bảng
-//                document.getElementById(`row-${benhnhanId}`).remove();
-//            } else {
-//                alert("Xóa bệnh nhân thất bại.");
-//            }
-//        })
-//        .catch(error => console.error('Error:', error));
-//    }
-//}
 
 
 function deleteCart(id,obj){

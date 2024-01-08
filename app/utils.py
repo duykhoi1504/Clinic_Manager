@@ -10,6 +10,3 @@ def count_cart(cart):
         'total_amount': total_amount
     }
 
-
-
-

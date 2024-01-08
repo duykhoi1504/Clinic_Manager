@@ -116,7 +116,7 @@ class YTa(NhanVien):
     # primary key
     maYT = Column(Integer, ForeignKey(NhanVien.maNV), primary_key=True)
     # relationship
-    danhsachkhamBenh_id = relationship('DanhSachKhamBenh', backref='thungan', lazy=True)
+    danhsachkhamBenh_id = relationship('DanhSachKhamBenh', backref='yta', lazy=True)
 
     def __str__(self):
         return self.name
@@ -140,6 +140,7 @@ class ThuNgan(NhanVien):
     __tablename__ = 'thungan'
     # primary key
     thuNgan_id = Column(Integer, ForeignKey(NhanVien.maNV), primary_key=True)
+
     hoadonthanhtoan = relationship('HoaDonThanhToan', backref='thungan', lazy=True)
 
     def __str__(self):
@@ -152,7 +153,7 @@ class BenhNhan(PersonModel, db.Model):
     # attribute
     maBN = Column(Integer, primary_key=True, autoincrement=True)
     tienSuBenh = Column(String(200), default='Không')
-    lichkhambenh_id = relationship('LichKhamBenh', backref='benhnhan', lazy=True)
+    danhsachkhambenh_id = relationship('DanhSachKhamBenh', backref='benhnhan', lazy=True)
 
     def __str__(self):
         return self.name
@@ -161,30 +162,33 @@ class BenhNhan(PersonModel, db.Model):
 class DanhSachKhamBenh(db.Model):
     __tablename__ = 'danhsachkhambenh'
     id = Column(Integer, primary_key=True, autoincrement=True)
-    soLuongBenhNhanToiDa = Column(Integer, default=40)
-    YTa_ID = Column(Integer, ForeignKey(YTa.maYT))
 
-    lichkhambenh_id = relationship('LichKhamBenh', backref='danhsachkhambenh', lazy=True)
-    bieumau = relationship('BieuMau', backref='danhsachkhambenh', lazy=True)
+    YTa_ID = Column(Integer, ForeignKey(YTa.maYT))
+    maBN_ID = Column(Integer,ForeignKey(BenhNhan.maBN))
+    ngayKham= Column(DateTime, default=datetime.now())
+
+
+    phieukhambenh_id = relationship('PhieuKhamBenh', backref='danhsachkhambenh', lazy=True)
+
     quanly = relationship('QuanLy', backref='danhsachkhambenh', lazy=True)
 
     def __str__(self):
         return self.name
 
 
-class LichKhamBenh(db.Model):
-    __tablename__ = 'lichkhambenh'
-
-    # attribute
-    id = Column(Integer, primary_key=True, autoincrement=True)
-
-    maBN = Column(Integer, ForeignKey(BenhNhan.maBN))
-    dsKhamBenh_id = Column(Integer, ForeignKey(DanhSachKhamBenh.id))
-
-    bieumau = relationship('BieuMau', backref='lichkhambenh', lazy=True)
-
-    def __str__(self):
-        return self.name
+# class LichKhamBenh(db.Model):
+#     __tablename__ = 'lichkhambenh'
+#
+#     # attribute
+#     id = Column(Integer, primary_key=True, autoincrement=True)
+#
+#     maBN = Column(Integer, ForeignKey(BenhNhan.maBN))
+#     dsKhamBenh_id = Column(Integer, ForeignKey(DanhSachKhamBenh.id))
+#
+#     bieumau = relationship('BieuMau', backref='lichkhambenh', lazy=True)
+#
+#     def __str__(self):
+#         return self.name
 
 
 class QuyDinh(db.Model):
@@ -236,13 +240,14 @@ class Thuoc(db.Model):
 class PhieuKhamBenh(db.Model):
     __tablename__ = 'phieukhambenh'
     maPhieuKham = Column(Integer, primary_key=True, autoincrement=True)
-    trieuChung = Column(String(250), nullable=False)
-    duDoanBenh = Column(String(100), nullable=False)
+    trieuChung = Column(String(250),default="Không có")
+    duDoanBenh = Column(String(100), default="Không có")
 
     bacsi_ID = Column(Integer, ForeignKey(BacSi.maBS))
+    ngayLap=Column(DateTime, default=datetime.now())
+    maBN=Column(Integer,ForeignKey(DanhSachKhamBenh.maBN_ID))
     huongdansudung = relationship('HuongDanSuDung', backref='phieukhambenh', lazy=True)
     hoadonthanhtoan = relationship('HoaDonThanhToan', backref='phieukhambenh', lazy=True)
-    bieumau = relationship('BieuMau', backref='phieukhambenh', lazy=True)
     quanly = relationship('QuanLy', backref='phieukhambenh', lazy=True)
 
     def __str__(self):
@@ -253,8 +258,8 @@ class HuongDanSuDung(db.Model):
     __tablename__ = 'huongdansudung'
     maThuoc_id = Column(Integer, ForeignKey(Thuoc.maThuoc), primary_key=True)
     maPhieuKham_id = Column(Integer, ForeignKey(PhieuKhamBenh.maPhieuKham), primary_key=True)
-    lieuDung = Column(String(100), nullable=False)
-    cachDung = Column(String(250), nullable=False)
+    lieuDung = Column(Integer, default=0)
+    cachDung = Column(String(250), nullable=True)
 
     def __str__(self):
         return self.name
@@ -274,29 +279,14 @@ class DanhSachThuoc(db.Model):
 class HoaDonThanhToan(db.Model):
     __tablename__ = 'hoadonthanhtoan'
     maHD = Column(Integer, primary_key=True, autoincrement=True)
-    tienKham = Column(Float, nullable=False)
-    tienThuoc = Column(Float, nullable=False)
-    tongTien = Column(Float, nullable=False)
+    tienKham=Column(Float,default=0)
+    tienThuoc=Column(Float,default=0)
+    trangThai= Column(String(100),default='Chưa Thanh Toán')
+
     thuNgan_id = Column(Integer, ForeignKey(ThuNgan.thuNgan_id))
     maPhieuKham = Column(Integer, ForeignKey(PhieuKhamBenh.maPhieuKham))
 
-    bieumau = relationship('BieuMau', backref='hoadonthanhtoan', lazy=True)
     quanly = relationship('QuanLy', backref='hoadonthanhtoan', lazy=True)
-
-    def __str__(self):
-        return self.name
-
-
-class BieuMau(db.Model):
-    __tablename__ = 'bieumau'
-    maBM = Column(Integer, primary_key=True, autoincrement=True)
-    tenBM = Column(String(250), nullable=False)
-    ngayKham = Column(DateTime, default=datetime.now())
-
-    maPhieuKham = Column(Integer, ForeignKey(PhieuKhamBenh.maPhieuKham))
-    hoaDon_id = Column(Integer, ForeignKey(HoaDonThanhToan.maHD))
-    dsKhamBenh_id = Column(Integer, ForeignKey(DanhSachKhamBenh.id))
-    lichKhamBenh = Column(Integer, ForeignKey(LichKhamBenh.id))
 
     def __str__(self):
         return self.name
@@ -562,55 +552,39 @@ if __name__ == "__main__":
         # db.session.commit()
         #
         #
-        # # ---------------------ADD PHIEUKHAMBENH------------------------
+        # #---------------------DANHSACHKHAMBENH------------------------
+        # dskhambenh1 = DanhSachKhamBenh( YTa_ID=6,ngayKham=datetime(2023, 1, 1),maBN_ID=1)
+        # dskhambenh2 = DanhSachKhamBenh( YTa_ID=6,ngayKham=datetime(2023, 12, 1),maBN_ID=2)
+        # db.session.add_all([dskhambenh1, dskhambenh2])
+        # db.session.commit()
+        # #---------------------ADD PHIEUKHAMBENH------------------------
         # phieukhambenh1 = PhieuKhamBenh(trieuChung='Triệu chứng của bệnh nhân 1',
         #                    duDoanBenh='Dự đoán bệnh cho bệnh nhân 1',
-        #                          bacsi_ID=2)
+        #                          bacsi_ID=2,ngayLap=datetime(2016, 4, 20),maBN=1)
         # phieukhambenh2 = PhieuKhamBenh(trieuChung='Triệu chứng của bệnh nhân 2',
         #                          duDoanBenh='Dự đoán bệnh cho bệnh nhân 2',
-        #                          bacsi_ID=3)
+        #                          bacsi_ID=3,ngayLap=datetime(2016, 4, 20),maBN=2)
         # db.session.add_all([phieukhambenh1, phieukhambenh2])
         # db.session.commit()
         # # ---------------------HUONG DAN SU DUNG------------------------
         # huongdansudung1 = HuongDanSuDung(maThuoc_id=2,
         #                                  maPhieuKham_id=1,
-        #                                  lieuDung='1 – 2 viên/lần, dùng cách nhau ít nhất 4 – 6 tiếng. Chỉ sử dụng tối đa 8 viên/ngày',
+        #                                  lieuDung=21,
         #                                  cachDung='Uống thuốc với nước. Không nhai hoặc nghiền thuốc khi sử dụng.')
         # huongdansudung2 = HuongDanSuDung(maThuoc_id=1,
         #                                  maPhieuKham_id=2,
-        #                                  lieuDung='Người lớn và trẻ em trên 7 tuổi: 200mg/ lần x 3 lần/ ngày. Liều tối đa không quá 600mg/ ngày',
+        #                                  lieuDung=12,
         #                                  cachDung='Không được dùng đồng thời với các thuốc ho khác hoặc bất cứ thuốc nào làm giảm bài tiết đờm.')
         # db.session.add_all([huongdansudung1, huongdansudung2])
         # db.session.commit()
-        #
+        # #
         # # ---------------------HOADONTHANHTOAN------------------------
-        # hoadonthanhtoan1 = HoaDonThanhToan(tienKham=500000,tienThuoc=120000,tongTien=620000,thuNgan_id=8,maPhieuKham=1)
-        # hoadonthanhtoan2 = HoaDonThanhToan(tienKham=500000, tienThuoc=100000, tongTien=600000, thuNgan_id=9, maPhieuKham=2)
+        # hoadonthanhtoan1 = HoaDonThanhToan(tienKham=500000,tienThuoc=120000,thuNgan_id=8,maPhieuKham=1)
+        # hoadonthanhtoan2 = HoaDonThanhToan(tienKham=500000, tienThuoc=100000, thuNgan_id=9, maPhieuKham=2)
         # db.session.add_all([hoadonthanhtoan1, hoadonthanhtoan2])
         # db.session.commit()
-        # # ---------------------DANHSACHKHAMBENH------------------------
-        # dskhambenh1 = DanhSachKhamBenh(soLuongBenhNhanToiDa=40, YTa_ID=6)
-        # dskhambenh2 = DanhSachKhamBenh(soLuongBenhNhanToiDa=40, YTa_ID=6)
-        # db.session.add_all([dskhambenh1, dskhambenh2])
-        # db.session.commit()
-        # # ---------------------LICHKHAMBENH------------------------
-        # lichkhambenh1 = LichKhamBenh(maBN=1,dsKhamBenh_id=1)
-        # lichkhambenh2 = LichKhamBenh(maBN=2,dsKhamBenh_id=2)
         #
-        # db.session.add_all([lichkhambenh1, lichkhambenh2])
-        # db.session.commit()
         #
-        # # ---------------------BIEUMAU------------------------
-        # bieu_mau = BieuMau(
-        #     tenBM='Biểu mẫu 1',
-        #     ngayKham=datetime.now(),
-        #     maPhieuKham=1,  # Thay 1 bằng ID thực tế của Phiếu Khám Bệnh
-        #     hoaDon_id=2,  # Thay 2 bằng ID thực tế của Hóa Đơn Thanh Toán
-        #     dsKhamBenh_id=3,  # Thay 3 bằng ID thực tế của Danh Sách Khám Bệnh
-        #     lichKhamBenh=4  # Thay 4 bằng ID thực tế của Lịch Khám Bệnh
-        # )
-        # db.session.add_all([lichkhambenh1, lichkhambenh2])
-        # db.session.commit()
         #
         # # ---------------------QUANLY------------------------
         # quanly1 = QuanLy(
@@ -632,45 +606,27 @@ if __name__ == "__main__":
         #
         # db.session.add_all([quanly1, quanly2])
         # db.session.commit()
-        # # ---------------------BIEUMAU------------------------
-        # bieumau1 = BieuMau(
-        #     tenBM='Biểu mẫu 1',
-        #     ngayKham=datetime(2023, 11, 12),
-        #     maPhieuKham=1,
-        #     hoaDon_id=1,
-        #     dsKhamBenh_id=1,
-        #     lichKhamBenh=1
-        # )
-        # bieumau2 = BieuMau(
-        #     tenBM='Biểu mẫu 1',
-        #     ngayKham=datetime.now(),
-        #     maPhieuKham=2,
-        #     hoaDon_id=2,
-        #     dsKhamBenh_id=2,
-        #     lichKhamBenh=2
-        # )
-        # db.session.add_all([bieumau1, bieumau2])
-        # db.session.commit()
+
 
 
     #########################
-    # c1 = Category(name="Iphone")
-    # c2 = Category(name="tablet")
-    #
-    # db.session.add(c1)
-    # db.session.add(c2)
-    # db.session.commit()
+        # c1 = Category(name="Iphone")
+        # c2 = Category(name="tablet")
+        #
+        # db.session.add(c1)
+        # db.session.add(c2)
+        # db.session.commit()
     # # ########################
-    # p1 = Product(name="IPhone15 Pro Max", price=10000000, Category_ID=2, image= "https://mobilepriceall.com/wp-content/uploads/2022/09/Apple-iPhone-14-1024x1024.jpg")
-    # p2 = Product(name="IPhone12 Pro Max", price=20000000, Category_ID=2, image= "https://mobilepriceall.com/wp-content/uploads/2022/09/Apple-iPhone-14-1024x1024.jpg")
-    # p3 = Product(name="IPhone13 Pro Max", price=30000000, Category_ID=2,  image= "https://mobilepriceall.com/wp-content/uploads/2022/09/Apple-iPhone-14-1024x1024.jpg")
-    # p4 = Product(name="IPhone16 Pro Max", price=40000000, Category_ID=1,  image= "https://mobilepriceall.com/wp-content/uploads/2022/09/Apple-iPhone-14-1024x1024.jpg")
-    # p5 = Product(name="IPhone19 Pro Max", price=90000000, Category_ID=1,  image= "https://mobilepriceall.com/wp-content/uploads/2022/09/Apple-iPhone-14-1024x1024.jpg")
-    # p6 = Product(name="Samsung", price=10000000, Category_ID=2, image= "https://mobilepriceall.com/wp-content/uploads/2022/09/Apple-iPhone-14-1024x1024.jpg")
-    # p7 = Product(name="Oppo Pro Max", price=20000000, Category_ID=2, image= "https://mobilepriceall.com/wp-content/uploads/2022/09/Apple-iPhone-14-1024x1024.jpg")
-    # p8 = Product(name="realme Pro Max", price=30000000, Category_ID=2,  image= "https://mobilepriceall.com/wp-content/uploads/2022/09/Apple-iPhone-14-1024x1024.jpg")
-    # p9 = Product(name="Oppo 2", price=40000000, Category_ID=1,  image= "https://mobilepriceall.com/wp-content/uploads/2022/09/Apple-iPhone-14-1024x1024.jpg")
-    # p10 = Product(name="Samsung2 Pro Max", price=90000000, Category_ID=1,  image= "https://mobilepriceall.com/wp-content/uploads/2022/09/Apple-iPhone-14-1024x1024.jpg")
-    # db.session.add_all([p1, p2, p3, p4, p5,p6, p7, p8, p9, p10])
-    # db.session.commit()
+    #     p1 = Product(name="IPhone15 Pro Max", price=10000000, Category_ID=2, image= "https://mobilepriceall.com/wp-content/uploads/2022/09/Apple-iPhone-14-1024x1024.jpg")
+    #     p2 = Product(name="IPhone12 Pro Max", price=20000000, Category_ID=2, image= "https://mobilepriceall.com/wp-content/uploads/2022/09/Apple-iPhone-14-1024x1024.jpg")
+    #     p3 = Product(name="IPhone13 Pro Max", price=30000000, Category_ID=2,  image= "https://mobilepriceall.com/wp-content/uploads/2022/09/Apple-iPhone-14-1024x1024.jpg")
+    #     p4 = Product(name="IPhone16 Pro Max", price=40000000, Category_ID=1,  image= "https://mobilepriceall.com/wp-content/uploads/2022/09/Apple-iPhone-14-1024x1024.jpg")
+    #     p5 = Product(name="IPhone19 Pro Max", price=90000000, Category_ID=1,  image= "https://mobilepriceall.com/wp-content/uploads/2022/09/Apple-iPhone-14-1024x1024.jpg")
+    #     p6 = Product(name="Samsung", price=10000000, Category_ID=2, image= "https://mobilepriceall.com/wp-content/uploads/2022/09/Apple-iPhone-14-1024x1024.jpg")
+    #     p7 = Product(name="Oppo Pro Max", price=20000000, Category_ID=2, image= "https://mobilepriceall.com/wp-content/uploads/2022/09/Apple-iPhone-14-1024x1024.jpg")
+    #     p8 = Product(name="realme Pro Max", price=30000000, Category_ID=2,  image= "https://mobilepriceall.com/wp-content/uploads/2022/09/Apple-iPhone-14-1024x1024.jpg")
+    #     p9 = Product(name="Oppo 2", price=40000000, Category_ID=1,  image= "https://mobilepriceall.com/wp-content/uploads/2022/09/Apple-iPhone-14-1024x1024.jpg")
+    #     p10 = Product(name="Samsung2 Pro Max", price=90000000, Category_ID=1,  image= "https://mobilepriceall.com/wp-content/uploads/2022/09/Apple-iPhone-14-1024x1024.jpg")
+    #     db.session.add_all([p1, p2, p3, p4, p5,p6, p7, p8, p9, p10])
+    #     db.session.commit()
     # # #####
