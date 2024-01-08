@@ -7,30 +7,48 @@ import hashlib
 from app import app, db
 import cloudinary.uploader
 from flask_login import current_user
-from sqlalchemy import func,extract
+from sqlalchemy import func,extract,text
 from flask import session,request
 
 
 #
-def bao_cao_doanh_thu_theo_thang(nam, thang):
+def bao_cao_doanh_thu_theo_ngay_trong_thang(nam=None, thang=None):
     result = (
         db.session.query(
-            extract('month', PhieuKhamBenh.ngayLap).label('Thang'),
+            extract('day', PhieuKhamBenh.ngayLap).label('Ngay'),
             func.count(func.distinct(BenhNhan.maBN)).label('SoBenhNhan'),
             func.sum(HoaDonThanhToan.tienKham + HoaDonThanhToan.tienThuoc).label('DoanhThu'),
-            func.avg(HoaDonThanhToan.tienKham + HoaDonThanhToan.tienThuoc).label('TrungBinhDoanhThu'),
-            func.min(HoaDonThanhToan.tienKham + HoaDonThanhToan.tienThuoc).label('DoanhThuMin'),
-            func.max(HoaDonThanhToan.tienKham + HoaDonThanhToan.tienThuoc).label('DoanhThuMax')
+            func.avg(HoaDonThanhToan.tienKham + HoaDonThanhToan.tienThuoc).label('TrungBinhDoanhThu')
         )
         .join(DanhSachKhamBenh, PhieuKhamBenh.maPhieuKham == DanhSachKhamBenh.phieukhambenh_id, isouter=True)
         .join(HoaDonThanhToan, PhieuKhamBenh.maPhieuKham == HoaDonThanhToan.maPhieuKham, isouter=True)
         .join(BenhNhan, DanhSachKhamBenh.maBN_ID == BenhNhan.maBN, isouter=True)
         .filter(extract('year', PhieuKhamBenh.ngayLap) == nam, extract('month', PhieuKhamBenh.ngayLap) == thang)
-        .group_by('Thang')
-        .order_by('Thang')
+        .group_by('Ngay')
+        .order_by('Ngay')
         .all()
     )
 
+    return result
+
+def bao_cao_tan_suat_su_dung_thuoc_theo_thang(nam=None, thang=None):
+    result = (
+        db.session.query(
+            extract('year', PhieuKhamBenh.ngayLap).label('Nam'),
+            extract('month', PhieuKhamBenh.ngayLap).label('Thang'),
+            Thuoc.tenThuoc,
+            DonVi.tenDV,
+            func.sum(HuongDanSuDung.lieuDung).label('TongSoLuong'),
+            func.count().label('SoLanDung')
+        )
+        .join(HuongDanSuDung, HuongDanSuDung.maThuoc_id == Thuoc.maThuoc)
+        .join(DonVi, Thuoc.maDV_id == DonVi.maDV)
+        .join(PhieuKhamBenh, HuongDanSuDung.maPhieuKham_id == PhieuKhamBenh.maPhieuKham)
+        .filter(extract('year', PhieuKhamBenh.ngayLap) == nam, extract('month', PhieuKhamBenh.ngayLap) == thang)
+        .group_by(text('Nam, Thang, Thuoc.tenThuoc, DonVi.tenDV'))
+        .order_by(text('Nam, Thang'))
+        .all()
+    )
     return result
 #
 

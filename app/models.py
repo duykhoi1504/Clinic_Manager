@@ -579,8 +579,8 @@ if __name__ == "__main__":
         # db.session.commit()
         # #
         # # ---------------------HOADONTHANHTOAN------------------------
-        # hoadonthanhtoan1 = HoaDonThanhToan(tienKham=500000,tienThuoc=120000,thuNgan_id=8,maPhieuKham=1)
-        # hoadonthanhtoan2 = HoaDonThanhToan(tienKham=500000, tienThuoc=100000, thuNgan_id=9, maPhieuKham=2)
+        # hoadonthanhtoan1 = HoaDonThanhToan(tienKham=100000,tienThuoc=120000,thuNgan_id=8,maPhieuKham=1)
+        # hoadonthanhtoan2 = HoaDonThanhToan(tienKham=100000, tienThuoc=100000, thuNgan_id=9, maPhieuKham=2)
         # db.session.add_all([hoadonthanhtoan1, hoadonthanhtoan2])
         # db.session.commit()
         #

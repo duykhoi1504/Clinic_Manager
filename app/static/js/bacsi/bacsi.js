@@ -55,44 +55,78 @@
     }
 
 
-
-
-//function addMedicine() {
-//            var maThuoc = document.getElementById("medicineName").value;
-//            var lieuDung = document.getElementById("quantity").value;
 //
-//            fetch('/api/lapphieukham', {
-//                method: "post",
-//                body: JSON.stringify({
-//                    "maThuoc": maThuoc,
-//                    "lieuDung": lieuDung
-//                }),
-//                headers: {
-//                    'Content-Type': "application/json"
-//                }
-//            })
-//            .then(function(res) {
-//                return res.json();
-//            })
-//            .then(function(data) {
-//                console.log(data);
 //
-//                // Update HTML elements based on the response
-//                var medicineListDiv = document.getElementById('medicine_list_datas');
-//                medicineListDiv.innerHTML = `
-//                    <p><strong>Mã thuốc:</strong> ${data.maThuoc}</p>
-//                    <p><strong>Tên thuốc:</strong> ${data.tenThuoc}</p>
-//                    <p><strong>Lieu dung:</strong> ${data.lieuDung}</p>
-//                `;
-//
-//                // You can also update other elements or perform additional actions
-//            })
-//            .catch(function(error) {
-//                console.error('Error:', error);
-//            });
+//function addToThuoc(id, name, price){
+//    fetch('/api/cart', {
+//        method: "post",
+//        body: JSON.stringify({
+//            "id": id,
+//            "name": name,
+//            "price": price
+//        }),
+//        headers:{
+//            'Content-Type': "application/json"
 //        }
+//    }).then(function(res){
+//        return res.json();
+//    }).then(function(data){
+//    console.info(data)
+//    let c = document.getElementsByClassName('cart-counter');
+//    for (let d of c)
+//        d.innerText = data.total_quantity
+//    })
+//}
 //
-//        function cancelMedicine() {
-//            document.getElementById("medicineName").value = "";
-//            document.getElementById("quantity").value = "";
+//
+//function updateThuoc(id, obj){
+//    obj.disabled=true;
+//    fetch(`/api/cart/${id}`,{
+//        method: 'put',
+//        body:JSON.stringify( {
+//            'quantity':obj.value
+//        }),headers:{
+//            'Content-Type': "application/json"
 //        }
+//    }).then(res => res.json()).then(data =>{
+//    obj.disabled=false;
+//        let c = document.getElementsByClassName('cart-counter');
+//            for (let d of c)
+//                d.innerText = data.total_quantity
+//    })
+//}
+//
+//
+//function deleteThuoc(id,obj){
+//    if(confirm("ban chac muon xoa khong")===true){
+//        obj.disabled=true;
+//    fetch(`/api/cart/${id}`,{
+//        method: 'delete'
+//    }).then(res => res.json()).then(data =>{
+//    obj.disabled=false;
+//        let c = document.getElementsByClassName('cart-counter');
+//            for (let d of c)
+//                d.innerText = data.total_quantity
+//            let r = document.getElementById(`product${id}`);
+//            r.style.display="none";
+//    });
+//    }
+//}
+//
+//function xacnhanThuoc() {
+//    // Display a confirmation dialog and proceed if the user clicks "OK"
+//    if (confirm("Bạn chắc chắn thanh toán!") === true) {
+//        // Make a POST request to the "/api/pay" endpoint
+//        fetch("/api/pay", {
+//            method: 'post'
+//        }).then(res => res.json()).then(data => {
+//            // Check the response status and take action accordingly
+//            if (data.status === 200)
+//                // If the payment was successful, reload the page
+//                location.reload();
+//            else
+//                // If there was an error, display the error message
+//                alert(data.err_msg);
+//        });
+//    }
+//}

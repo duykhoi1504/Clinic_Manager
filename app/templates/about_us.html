@@ -62,6 +62,7 @@
       align-items: center;
       padding: 30px 0;
     }
+
        /* Thêm style cho noidung-trangloai */
       .noidung-trangloai {
       width: 80%;
@@ -84,6 +85,12 @@
     .box_slidebar {
       width: 25%;
       float: right;
+
+    }
+    .content-left{
+     width:42%;
+     float:left;
+
     }
        /* Thêm style cho wp_service */
     .wp_service {
@@ -145,6 +152,76 @@
       cursor: pointer;
       margin-top: 5px;
     }
+
+    .video-container {
+    position: relative;
+    padding-bottom: 56.25%;
+    padding-top: 30px;
+    height: 0;
+    overflow: hidden;
+  }
+
+  .video-container iframe,
+  .video-container embed {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+   .gt-vid span {
+    display: inline-block;
+    position: relative;
+    color: #6a276e; /* Màu chữ của span */
+    font-size: 25px;
+  }
+
+  .gt-vid span::before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 2px; /* Độ dày của đường gạch chân dưới */
+    bottom: 0;
+    left: 0;
+    background-color: #6a276e; /* Màu đường gạch chân dưới */
+    visibility: hidden;
+    transform: scaleX(0);
+    transition: all 0.3s ease-in-out; /* Thời gian và kiểu chuyển động */
+  }
+
+  .gt-vid span:hover::before {
+    visibility: visible;
+    transform: scaleX(1);
+   }
+
+   .baidoc span:hover,
+   .baochi span:hover {
+          color: #4DA6FF;
+   }
+
+
+    /* Thanh cuộn lên */
+  #back-to-top {
+    display: none;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #4ca69d;
+    color: #fff;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    text-decoration: none;
+    font-size: 14px;
+  }
+
+  #back-to-top:hover {
+    background-color: #4DA6FF;
+  }
+
+
+  }
 
 </style>
 
@@ -318,8 +395,7 @@
 
 
             <div class="clear5"></div>
-            <p style="font-size:15px;color: red; padding-left:10px;box-sizing:border-box;">
-                * Lưu ý: hiệu quả của việc hỗ trợ điều trị còn tùy thuộc vào cơ địa của mỗi người.</p>
+            <p style="font-size:15px;color: red; padding-left:10px;box-sizing:border-box;">* Lưu ý: hiệu quả của việc hỗ trợ điều trị còn tùy thuộc vào cơ địa của mỗi người.</p>
             <div class="clear20"></div>
 
 
@@ -327,6 +403,8 @@
 
 
         </div>
+<!--        box_trangloai-->
+
         <div class="box_slidebar">
             <div class="sidebar-001">
                 <label>DANH MỤC BỆNH</label>
@@ -380,7 +458,7 @@
                     <div class="wp_bacsi">
                         <a href="">
                             <div class="h_bacsi"><img src="https://dakhoatanbinh.vn/img/bs11.png" alt="icon"></div>
-                            <div class="name_b1">bs.Bùi Tiến Đức</div>
+                            <div class="name_b1">Bs.Bùi Tiến Đức</div>
                             <div class="ck_b1">Chuyên Chấn Thương Chỉnh Hình</div>
                             <div class="clear"></div>
                             <div class="line_b"></div>
@@ -397,7 +475,7 @@
                     <div class="wp_bacsi">
                         <a href="">
                             <div class="h_bacsi"><img src="https://dakhoatanbinh.vn/img/bs33.png" alt="icon"></div>
-                            <div class="name_b1">bs.Vũ Thị Ngọc</div>
+                            <div class="name_b1">Bs.Vũ Thị Ngọc</div>
                             <div class="ck_b1">Chuyên Sản Phụ Khoa</div>
                             <div class="clear"></div>
                             <div class="line_b"></div>
@@ -414,7 +492,7 @@
                     <div class="wp_bacsi">
                         <a href="">
                             <div class="h_bacsi"><img src="https://dakhoatanbinh.vn/img/bs22.png" alt="icon"></div>
-                            <div class="name_b1">bs.Trần Kim Anh</div>
+                            <div class="name_b1">Bs.Trần Kim Anh</div>
                             <div class="ck_b1">Chuyên Sản Phụ Khoa</div>
                             <div class="clear"></div>
                             <div class="line_b"></div>
@@ -430,9 +508,159 @@
 
                 </div>
                 <div class="clear30"></div>
+
             </div>
         </div>
+<!--        box_slidebar-->
+
+        <div class="content-left">
+              <div class="gt-vid"><span>Giới Thiệu Chung</span></div>
+            <br>
+             <div class="video-container">
+                    <iframe width="560" height="315" src="https://www.youtube.com/embed/Ef83M9iiJh0" frameborder="0"
+                            allowfullscreen></iframe>
+                </div>
+            <P></P>
+               <div class="baidoc"><span>BÀI ĐỌC ĐỀ XUẤT</span></div>
+                  <div class="wp_baidoc">
+                        <a href="">
+                            <div class="h_baidoc"><img src="https://www.docosan.com/blog/wp-content/uploads/2022/05/bang-gia-dich-vu-y-hoc-co-truyen-2.jpg" alt="icon"></div>
+                            <div class="name_bd">Cập nhật bảng giá dịch vụ y học cổ truyền năm 2023</div>
+                            <div class="ck_bd">Tham khảo bảng giá dịch vụ y học cổ truyền được Doctor có sẵn cập nhật trong bài viết để có sự chuẩn bị tốt hơn về mặt tài chính.
+                                Đồng thời, tìm kiếm địa chỉ khám chữa bệnh uy tín để đảm bảo mức độ an toàn và hiệu quả về mặt sức khỏe. […]</div>
+
+
+                            <div class="docthem">Đọc thêm &gt&gt;</div>
+                        </a>
+                    </div>
+
+                    <div class="wp_baidoc">
+                        <a href="">
+                            <div class="h_baidoc"><img src="https://www.docosan.com/blog/wp-content/uploads/2021/12/thuoc-dong-y-chua-yeu-sinh-ly-nam-1-300x200.jpg" alt="icon"></div>
+                            <div class="name_bd">Bạn có biết: 6 bài thuốc đông y chữa yếu sinh lý nam</div>
+                            <div class="ck_bd">Ưu điểm của phương pháp này phải kể đến là tính an toàn nhờ thành phần thảo dược tự nhiên.
+                                Vậy dùng cây thuốc nam chữa yếu sinh lý như thế nào? Tên của một số loại thuốc đông y chữa yếu sinh lý nam?</div>
+                              <div class="ck_bd"> Hãy cùng tìm hiểu trong bài viết dưới đây!</div>
+
+
+                            <div class="docthem">Đọc thêm &gt&gt;</div>
+                        </a>
+                    </div>
+
+                    <div class="wp_baidoc">
+                        <a href="">
+                            <div class="h_baidoc"><img src="https://www.docosan.com/blog/wp-content/uploads/2021/07/xoa-bop-bam-huyet-1-300x200.jpg" alt="icon"></div>
+                            <div class="name_bd">Top 4 địa điểm xoa bóp bấm huyệt uy tín, điều trị hiệu</div>
+                            <div class="ck_bd">Xoa bóp bấm huyệt là kỹ thuật trị liệu bằng tay, theo đó người bấm huyệt sẽ dùng tay tác động vào các huyệt, da thịt và gân khớp người bệnh.
+                                Phương pháp này đã được kiểm chứng mang lại nhiều lợi ích trong việc điều trị một số bệnh lý về thần kinh, cơ xương khớp, điều hòa chức năng nội tạng,…</div>
+
+
+                            <div class="docthem">Đọc thêm &gt&gt;</div>
+                        </a>
+                    </div>
+
+            <style>
+                .baidoc {
+                  position: relative;
+                  display: inline-block;
+                }
+
+                .wp_baidoc {
+                  margin-top: 20px;
+                }
+
+                .h_baidoc {
+                  width: 450px;
+                  height: 250px;
+                  overflow: hidden;
+                  margin-bottom: 10px;
+                }
+
+                .h_baidoc img {
+                  width: 100%;
+                  height: 100%;
+                  object-fit: cover; /* Giữ tỉ lệ khung hình và đảm bảo ảnh không bị biến đổi */
+                }
+
+                .name_bd {
+                  font-size: 18px;
+                  font-weight: bold;
+                  margin-bottom: 5px;
+                }
+
+                .ck_bd {
+                  font-size: 14px;
+                  color: #666;
+                  margin-bottom: 10px;
+                }
+
+                .docthem {
+                  font-size: 16px;
+                  color:#39bdbd;
+                  cursor: pointer;
+                  font-weight: bold;
+                }
+
+                .docthem:hover,
+                 .timhieu:hover{
+                  text-decoration: underline;
+                }
+            </style>
+
+
+
+        </div>
+<!--     content-left-->
     </div>
+<!--    noidung-trangloai-->
+
+     <!-- Thêm nút back-to-top -->
+<a href="javascript:void(0);" id="back-to-top" title="Go to top">&#9650;</a>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+          var backToTopButton = document.getElementById("back-to-top");
+
+          window.addEventListener("scroll", function() {
+            if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+              backToTopButton.style.display = "block";
+            } else {
+              backToTopButton.style.display = "none";
+            }
+          });
+
+          backToTopButton.addEventListener("click", function() {
+            scrollToTop(1000); // Thời gian cuộn lên (milliseconds)
+          });
+
+          function scrollToTop(duration) {
+            var start = window.pageYOffset;
+            var startTime = 'now' in window.performance ? performance.now() : new Date().getTime();
+
+            function animateScroll() {
+              var currentTime = 'now' in window.performance ? performance.now() : new Date().getTime();
+              var timeElapsed = currentTime - startTime;
+              window.scrollTo(0, easeInOut(timeElapsed, start, -start, duration));
+
+              if (timeElapsed < duration) {
+                requestAnimationFrame(animateScroll);
+              }
+            }
+
+            function easeInOut(t, b, c, d) {
+              t /= d / 2;
+              if (t < 1) return c / 2 * t * t + b;
+              t--;
+              return -c / 2 * (t * (t - 2) - 1) + b;
+            }
+
+            requestAnimationFrame(animateScroll);
+          }
+        });
+    </script>
+
+
+
 </section>
 
 {% endblock %}

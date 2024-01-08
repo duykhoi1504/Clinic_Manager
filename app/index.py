@@ -8,7 +8,7 @@ from app.models import NhanVien, UserRoleEnum, BenhNhan, PhieuKhamBenh, Thuoc,Do
 from datetime import datetime
 from app.admin import current_user
 from sqlalchemy import func
-
+from app.view.bacsi import bacsi_lapphieukhambenh
 @app.route("/")
 def index():
     kw = request.args.get('kw')
@@ -16,10 +16,7 @@ def index():
     cates = dao.load_categories()
     products = dao.load_products(kw=kw, page=page)
     nhanviens = dao.load_nhanviens(kw=kw, page=page)
-    result=dao.bao_cao_doanh_thu_theo_thang(2016,4)
-    for row in result:
-        print(
-            f"| {row.Thang:5} | {row.SoBenhNhan:13} | {row.DoanhThu:9} | {row.TrungBinhDoanhThu:11} | {row.DoanhThuMin:3} | {row.DoanhThuMax:3} |")
+
     image_data = [
         {'url': 'https://hoanmy.com/wp-content/uploads/2023/12/dai-thao-duong.png',
          'title': 'Những biến chứng nguy hiểm của đái tháo đường và cách phòng ngừa',
@@ -185,10 +182,12 @@ def dangkitructiep():
 def lapphieukham():
     err_msg = ""
     success_message = ""
+
     thuocs = dao.load_thuocs()
     if not current_user.is_authenticated:
         # Redirect to the login page or handle unauthorized access
         return redirect('/login')  # Adjust the URL accordingly
+
 
     query = (
         db.session.query(User, NhanVien)
@@ -427,4 +426,5 @@ def load_user(user_id):
 if __name__ == '__main__':
     from app import admin
 
+    bacsi_lapphieukhambenh
     app.run(debug=True)

@@ -1,46 +1,68 @@
-import math
-
-from flask import render_template, request, redirect, session, jsonify, flash, url_for
-from app import dao, utils
-from app import app, login, db
-from flask_login import login_user, logout_user
-from app.models import NhanVien, UserRoleEnum, BenhNhan
-from datetime import datetime
-from app.admin import current_user
-
-
-
-# @app.route('/api/lapphieukham/<hoTen>', methods=['PUT'])
-# def find_benhnhan(hoTen):
-#     benhnhans = session.get('cart', {})
-#     if benhnhans and hoTen in benhnhans:
-#         existing_benhnhan = BenhNhan.query.filter_by(hoTen=hoTen).first()
+# import math
 #
-#     session['cart'] = benhnhans
+# from flask import render_template, request, redirect, session, jsonify, flash, url_for
+# from app import dao, utils
+# from app import app, login, db
+# from flask_login import login_user, logout_user
+# from app.models import NhanVien, UserRoleEnum, BenhNhan
+# from datetime import datetime
+# from app.admin import current_user
 #
-#     return jsonify({
-#         'benhnhan': BenhNhan.query.filter_by(hoTen=hoTen).first()
-#     })
-
-
-# @app.route('/api/fetch_patient_info', methods=['POST'])
-# def fetch_patient_info():
-#     # Get the patient's name from the AJAX request
-#     patient_name = request.form.get('patientName')
 #
-#     # Query the database for patient information
-#     patient = BenhNhan.query.filter_by(name=patient_name).first()
 #
-#     # Check if the patient exists
-#     if patient:
-#         # Prepare the JSON response
-#         patient_info = {
-#             'name': patient.name,
-#             'maCCCD': patient.maCCCD,
-#             'tienSuBenh': patient.tienSuBenh,
-#             # Add more fields as needed
+# @app.route('/api/lapphieukham', methods=['post'])
+# def add_thuoc():
+#     thuocs = session.get('thuocs')
+#     if thuocs is None:
+#         thuocs = {}
+#     data = request.json
+#     maThuoc_id = str(data.get("maThuoc_id"))
+#
+#     if id in thuocs:  # san pham da co trong gio
+#         thuocs[maThuoc_id]["quantity"] = thuocs[maThuoc_id]["quantity"]+1
+#     else:  # san pham chua co trong gio
+#         thuocs[maThuoc_id] = {
+#             "maThuoc_id": maThuoc_id,
+#             "lieuDung": data.get("lieuDung"),
+#
+#
+#             "price": data.get("price"),
+#             "quantity": 1
 #         }
-#         return jsonify(patient_info)
+#     session['maThuoc_id'] = maThuoc_id
+#
+#     return jsonify(utils.count_cart(maThuoc_id))
+#
+#
+# @app.route('/api/lapphieukham/<product_id>', methods=['put'])
+# def updata_thuoc(product_id):
+#     thuocs = session.get('thuocs')
+#     if thuocs and product_id in thuocs:
+#         quantity = request.json.get('quantity')
+#         thuocs[product_id]['quantity'] = int(quantity)
+#
+#     session['cart'] = thuocs
+#
+#     return jsonify(utils.count_cart(thuocs))
+#
+#
+# @app.route('/api/lapphieukham/<product_id>', methods=['delete'])
+# def delete_thuoc(product_id):
+#     cart = session.get('cart')
+#     if cart and product_id in cart:
+#         del cart[product_id]
+#
+#     session['cart'] = cart
+#
+#     return jsonify(utils.count_cart(cart))
+#
+#
+# @app.route('/api/pay', methods=['post'])
+# def xacnhan():
+#     try:
+#         dao.add_receipt(session.get('cart'))
+#     except:
+#         return jsonify({'status': 500, 'err_msg': 'he thong dang co loi'})
 #     else:
-#         # Patient not found, return an empty response or an error message
-#         return jsonify({'error': 'Patient not found'})
+#         del session['cart']
+#         return jsonify({'status': 200})
