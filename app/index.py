@@ -9,6 +9,12 @@ from datetime import datetime
 from app.admin import current_user
 from sqlalchemy import func
 from app.view.bacsi import bacsi_lapphieukhambenh
+
+#VNPAY
+
+##
+
+
 @app.route("/")
 def index():
     kw = request.args.get('kw')
@@ -48,7 +54,8 @@ def index():
 def add_benh_nhan():
     err_msg = ""
     success_message = ""
-    if request.method == ('POST'):
+
+    if request.method == 'POST':
         hoTen = request.form.get('hoTen')
         ngaySinh = request.form.get('ngaySinh')
         maCCCD = request.form.get('maCCCD')
@@ -60,24 +67,26 @@ def add_benh_nhan():
 
         if not all([hoTen, ngaySinh, maCCCD, diaChi, email, soDienThoai, tienSuBenh, sex]):
             err_msg = "Please fill in all required fields."
+            return render_template("yta.html", err_msg=err_msg)
 
-            return render_template("BenhNhan.html", err_msg=err_msg)
         try:
             isTrungCCCD = dao.save_benhnhan_data_to_session(hoTen=hoTen, ngaySinh=ngaySinh, maCCCD=maCCCD,
                                                             diaChi=diaChi, email=email,
                                                             soDienThoai=soDienThoai, tienSuBenh=tienSuBenh, sex=sex)
             if isTrungCCCD:
                 dao.confirm_benhnhan_and_insert_to_database()
-                success_message = "Đăng kí thành công!"
+                success_message = "BenhNhan added successfully!"
                 err_msg = ""
             else:
                 success_message = ""
                 err_msg = "Mã CCCD Trùng rồi"
                 return render_template("BenhNhan.html", err_msg=err_msg, success_message=success_message)
-        except:
+        except Exception as e:
+            print(f"An error occurred: {e}")
             success_message = ""
-            err_msg = "he thong dang loi!"
+            err_msg = "Hệ thống đang gặp lỗi!"
         return render_template("BenhNhan.html", err_msg=err_msg, success_message=success_message)
+
     return render_template("BenhNhan.html", err_msg=err_msg, success_message=success_message)
 
 
@@ -89,7 +98,6 @@ def thanhtoan():
         phieukhambenh = dao.get_maphieukham_by_id(maPK)
     else:
         phieukhambenh = dao.get_maphieukham_by_id(1)
-
     benhnhan= BenhNhan.query.get(phieukhambenh.maBN)
     bacsi=BacSi.query.get(phieukhambenh.bacsi_ID)
     hoadon=HoaDonThanhToan.query.get(phieukhambenh.maPhieuKham)
@@ -142,7 +150,8 @@ def thanhtoan():
 def dangkitructiep():
     err_msg = ""
     success_message = ""
-    if request.method == ('POST'):
+
+    if request.method == 'POST':
         hoTen = request.form.get('hoTen')
         ngaySinh = request.form.get('ngaySinh')
         maCCCD = request.form.get('maCCCD')
@@ -154,8 +163,8 @@ def dangkitructiep():
 
         if not all([hoTen, ngaySinh, maCCCD, diaChi, email, soDienThoai, tienSuBenh, sex]):
             err_msg = "Please fill in all required fields."
-
             return render_template("yta.html", err_msg=err_msg)
+
         try:
             isTrungCCCD = dao.save_benhnhan_data_to_session(hoTen=hoTen, ngaySinh=ngaySinh, maCCCD=maCCCD,
                                                             diaChi=diaChi, email=email,
@@ -168,10 +177,12 @@ def dangkitructiep():
                 success_message = ""
                 err_msg = "Mã CCCD Trùng rồi"
                 return render_template("yta.html", err_msg=err_msg, success_message=success_message)
-        except:
+        except Exception as e:
+            print(f"An error occurred: {e}")
             success_message = ""
-            err_msg = "he thong dang loi!"
+            err_msg = "Hệ thống đang gặp lỗi!"
         return render_template("yta.html", err_msg=err_msg, success_message=success_message)
+
     return render_template("yta.html", err_msg=err_msg, success_message=success_message)
 
 
@@ -402,6 +413,10 @@ def cart_list():
 def index1():
     return render_template("testhtml.html")
 
+# ---------------------------------------------------------------------
+
+@app.route('/VNPAY')
+
 
 # ---------------------------------------------------------------------
 @app.context_processor  # trang nao cung se co du lieu nay`
@@ -427,4 +442,5 @@ if __name__ == '__main__':
     from app import admin
 
     bacsi_lapphieukhambenh
+
     app.run(debug=True)

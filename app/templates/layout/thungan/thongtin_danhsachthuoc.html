@@ -31,8 +31,8 @@
                         <td>{{f.lieuDung}}</td>
                         {% endif %}
                         {% endfor %}
-                        <td>{{c.giaTien}}</td>
-                        <td>{{c.giaTien*2}}</td>
+                        <td>{{  "{:,.0f}".format(c.giaTien)}} VNĐ</td>
+                        <td>{{  "{:,.0f}".format(c.giaTien*2)}} VNĐ</td>
                     </tr>
                     {% endfor %}
                     </tbody>

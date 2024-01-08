@@ -164,9 +164,8 @@ class DanhSachKhamBenh(db.Model):
     id = Column(Integer, primary_key=True, autoincrement=True)
 
     YTa_ID = Column(Integer, ForeignKey(YTa.maYT))
-    maBN_ID = Column(Integer,ForeignKey(BenhNhan.maBN))
-    ngayKham= Column(DateTime, default=datetime.now())
-
+    maBN_ID = Column(Integer, ForeignKey(BenhNhan.maBN))
+    ngayKham = Column(DateTime, default=datetime.now())
 
     phieukhambenh_id = relationship('PhieuKhamBenh', backref='danhsachkhambenh', lazy=True)
 
@@ -240,12 +239,12 @@ class Thuoc(db.Model):
 class PhieuKhamBenh(db.Model):
     __tablename__ = 'phieukhambenh'
     maPhieuKham = Column(Integer, primary_key=True, autoincrement=True)
-    trieuChung = Column(String(250),default="Không có")
+    trieuChung = Column(String(250), default="Không có")
     duDoanBenh = Column(String(100), default="Không có")
 
     bacsi_ID = Column(Integer, ForeignKey(BacSi.maBS))
-    ngayLap=Column(DateTime, default=datetime.now())
-    maBN=Column(Integer,ForeignKey(DanhSachKhamBenh.maBN_ID))
+    ngayLap = Column(DateTime, default=datetime.now())
+    maBN = Column(Integer, ForeignKey(DanhSachKhamBenh.maBN_ID))
     huongdansudung = relationship('HuongDanSuDung', backref='phieukhambenh', lazy=True)
     hoadonthanhtoan = relationship('HoaDonThanhToan', backref='phieukhambenh', lazy=True)
     quanly = relationship('QuanLy', backref='phieukhambenh', lazy=True)
@@ -279,9 +278,9 @@ class DanhSachThuoc(db.Model):
 class HoaDonThanhToan(db.Model):
     __tablename__ = 'hoadonthanhtoan'
     maHD = Column(Integer, primary_key=True, autoincrement=True)
-    tienKham=Column(Float,default=0)
-    tienThuoc=Column(Float,default=0)
-    trangThai= Column(String(100),default='Chưa Thanh Toán')
+    tienKham = Column(Float, default=0)
+    tienThuoc = Column(Float, default=0)
+    trangThai = Column(String(100), default='Chưa Thanh Toán')
 
     thuNgan_id = Column(Integer, ForeignKey(ThuNgan.thuNgan_id))
     maPhieuKham = Column(Integer, ForeignKey(PhieuKhamBenh.maPhieuKham))
@@ -345,7 +344,37 @@ if __name__ == "__main__":
         #     sex=Sex.FEMALE,
         #     tienSuBenh='Tiền sử bệnh của bệnh nhân 2'
         # )
-        # db.session.add_all([benhnhan1,benhnhan2])
+        # benhnhan3 = BenhNhan(
+        #     hoTen='Trần Thị C',
+        #     ngaySinh=datetime(2004, 5, 5),
+        #     maCCCD='26724661012',
+        #     diaChi='472 Đường Bình Thạnh, Quận ABC',
+        #     email='tranthic@example.com',
+        #     soDienThoai='0987274321',
+        #     sex=Sex.FEMALE,
+        #     tienSuBenh='Tiền sử bệnh của bệnh nhân 3'
+        # )
+        # benhnhan4 = BenhNhan(
+        #     hoTen='Đông Văn Nam',
+        #     ngaySinh=datetime(2004, 5, 5),
+        #     maCCCD='1211159902',
+        #     diaChi='472 Đường Bình Chánh, Quận ABC',
+        #     email='tranthiNam@example.com',
+        #     soDienThoai='0982224321',
+        #     sex=Sex.MALE,
+        #     tienSuBenh='Tiền sử bệnh của bệnh nhân 4'
+        # )
+        # benhnhan5 = BenhNhan(
+        #     hoTen='Đông Văn Nhan',
+        #     ngaySinh=datetime(2004, 5, 5),
+        #     maCCCD='1217759922',
+        #     diaChi='472 Đường Bình Chánh, Quận ABC',
+        #     email='tranthiNam@example.com',
+        #     soDienThoai='0982222221',
+        #     sex=Sex.MALE,
+        #     tienSuBenh='Tiền sử bệnh của bệnh nhân 5'
+        # )
+        # db.session.add_all([benhnhan1,benhnhan2,benhnhan3,benhnhan4,benhnhan5])
         # db.session.commit()
         # # ---------------------ADD USER------------------------
         # import hashlib
@@ -570,43 +599,109 @@ if __name__ == "__main__":
         #                ngaySX=datetime(2023, 1, 1),nhaSX='Khánh Hòa',
         #                soLuong=190,giaTien='147000',
         #                image='https://cdn.nhathuoclongchau.com.vn/unsafe/373x0/filters:quality(90)/https://cms-prod.s3-sgn09.fptcloud.com/00033640_acetylcystein_200mg_khapharco_190v_4715_6239_large_c0df9dbf99.jpg',
-        #                 maDV_id='1')
+        #                 maDV_id=1)
         # thuoc2 = Thuoc(tenThuoc='Panadol', moTa='Hoạt chất: Paracetamol 500mg/viên',
         #                ngaySX=datetime(2023, 2, 12), nhaSX='GlaxoSmithKline',
-        #                soLuong=5, giaTien='60000',
+        #                soLuong=84, giaTien='60000',
         #                image='https://cdn.nhathuoclongchau.com.vn/unsafe/373x0/filters:quality(90)/https://cms-prod.s3-sgn09.fptcloud.com/00005708_panadol_500mg_vien_sui_9558_5c06_large_1e05052a61.JPG',
-        #                maDV_id='3')
+        #                maDV_id=3)
         # thuoc3 = Thuoc(tenThuoc='Frigofast Spray ', moTa='Chai xịt lạnh Frigofast Spray giảm đau bong gân, căng cơ, giãn dây chằng (200ml)',
         #                ngaySX=datetime(2022, 5, 22), nhaSX='FARMAC - ZABBAN S.P.A',
-        #                soLuong=80, giaTien='175000',
+        #                soLuong=21, giaTien='175000',
+        #                image='https://cdn.nhathuoclongchau.com.vn/unsafe/373x0/filters:quality(90)/https://cms-prod.s3-sgn09.fptcloud.com/00502251_chai_xit_lanh_giam_dau_frigofast_spray_italia_200ml_8660_63d7_large_aa0c229207.jpg',
+        #                maDV_id=2)
+        # thuoc4 = Thuoc(tenThuoc='Clorpheniramin',
+        #                moTa='điều trị dị ứng da & dị ứng đường hô hấp (200 viên)',
+        #                ngaySX=datetime(2022, 5, 22), nhaSX='CÔNG TY CP DƯỢC PHẨM KHÁNH HÒA',
+        #                soLuong=56, giaTien='64000',
+        #                image='https://www.domesco.com/pictures/catalog/products/san-pham-2019/03-10-2019/Clorpheniramin-maleat-4-mg-nang.jpg',
+        #                maDV_id=3)
+        # thuoc5 = Thuoc(tenThuoc='Acetylcystein',
+        #                moTa='Thuốc Acetylcystein 200mg Khapharco tiêu nhầy trong bệnh viêm phế quản, bệnh nhầy nhớt (190 viên)',
+        #                ngaySX=datetime(2023, 1, 1), nhaSX='Khánh Hòa',
+        #                soLuong=190, giaTien='87650',
+        #                image='https://cdn.nhathuoclongchau.com.vn/unsafe/373x0/filters:quality(90)/https://cms-prod.s3-sgn09.fptcloud.com/00033640_acetylcystein_200mg_khapharco_190v_4715_6239_large_c0df9dbf99.jpg',
+        #                maDV_id=1)
+        # thuoc6 = Thuoc(tenThuoc='Panadol', moTa='Hoạt chất: Paracetamol 500mg/viên',
+        #                ngaySX=datetime(2023, 2, 12), nhaSX='GlaxoSmithKline',
+        #                soLuong=5, giaTien='212578',
+        #                image='https://cdn.nhathuoclongchau.com.vn/unsafe/373x0/filters:quality(90)/https://cms-prod.s3-sgn09.fptcloud.com/00005708_panadol_500mg_vien_sui_9558_5c06_large_1e05052a61.JPG',
+        #                maDV_id=3)
+        # thuoc7 = Thuoc(tenThuoc='Frigofast Spray ',
+        #                moTa='Uống Frigofast Spray giúp ổn định dần và cân đối lượng đường lại (200ml)',
+        #                ngaySX=datetime(2022, 5, 22), nhaSX='FARMAC - ZABBAN S.P.A',
+        #                soLuong=80, giaTien='145556',
         #                image='https://cdn.nhathuoclongchau.com.vn/unsafe/373x0/filters:quality(90)/https://cms-prod.s3-sgn09.fptcloud.com/00502251_chai_xit_lanh_giam_dau_frigofast_spray_italia_200ml_8660_63d7_large_aa0c229207.jpg',
         #                maDV_id='2')
-        # db.session.add_all([thuoc1,thuoc2,thuoc3])
+        # thuoc8 = Thuoc(tenThuoc='Revitalize Capsules',
+        #                moTa='Revitalize Capsules giúp tăng cường năng lượng và sự tỉnh táo (45 viên)',
+        #                ngaySX=datetime(2022, 10, 12),
+        #                nhaSX='Energize Pharma',
+        #                soLuong=40,
+        #                giaTien='74985',
+        #                image='https://example.com/revitalize_capsules.jpg',
+        #                maDV_id='3')
+        # thuoc9 = Thuoc(tenThuoc='MintyFresh Drops',
+        #                moTa='MintyFresh Drops	 giúp đường huyết trong cơ thể điều hòa lại (15ml)',
+        #                ngaySX=datetime(2022, 7, 10),
+        #                nhaSX='Natures Wellness',
+        #                soLuong=30,
+        #                giaTien='112566',
+        #                image='https://example.com/mintyfresh_drops.jpg',
+        #                maDV_id='3')
+        # thuoc10 = Thuoc(tenThuoc='MintyFresh Drops',
+        #                moTa='MintyFresh Drops mang lại hương thơm tự nhiên, giảm cảm giác khó chịu trong họng (15ml)',
+        #                ngaySX=datetime(2022, 7, 10),
+        #                nhaSX="Thanh long",
+        #                soLuong=70,
+        #                giaTien='224125',
+        #                image='https://example.com/mintyfresh_drops.jpg',
+        #                maDV_id='3')
+        #
+        # db.session.add_all([thuoc1,thuoc2,thuoc3,thuoc4,thuoc5,thuoc6,thuoc7,thuoc8,thuoc8,thuoc9,thuoc10])
         # db.session.commit()
         # # ---------------------DANH SACH THUOC------------------------
         #
         # dsthuoc1 = DanhSachThuoc(maThuoc_id=1)
         # dsthuoc2 = DanhSachThuoc(maThuoc_id=2)
         # dsthuoc3 = DanhSachThuoc(maThuoc_id=3)
+        # dsthuoc4 = DanhSachThuoc(maThuoc_id=4)
+        # dsthuoc5 = DanhSachThuoc(maThuoc_id=5)
+        # dsthuoc6 = DanhSachThuoc(maThuoc_id=6)
+        # dsthuoc7 = DanhSachThuoc(maThuoc_id=7)
+        # dsthuoc8 = DanhSachThuoc(maThuoc_id=8)
+        # dsthuoc9 = DanhSachThuoc(maThuoc_id=9)
+        # dsthuoc10 = DanhSachThuoc(maThuoc_id=10)
+        # db.session.add_all([dsthuoc1, dsthuoc2,dsthuoc3,dsthuoc4,dsthuoc5, dsthuoc6,dsthuoc7,dsthuoc8,dsthuoc9,dsthuoc10])
         #
-        #
-        # db.session.add_all([dsthuoc1, dsthuoc2,dsthuoc3])
         # db.session.commit()
         #
         #
         # #---------------------DANHSACHKHAMBENH------------------------
-        # dskhambenh1 = DanhSachKhamBenh( YTa_ID=6,ngayKham=datetime(2023, 1, 1),maBN_ID=1)
-        # dskhambenh2 = DanhSachKhamBenh( YTa_ID=6,ngayKham=datetime(2023, 12, 1),maBN_ID=2)
-        # db.session.add_all([dskhambenh1, dskhambenh2])
+        # dskhambenh1 = DanhSachKhamBenh( YTa_ID=10,ngayKham=datetime(2023, 11, 1),maBN_ID=1)
+        # dskhambenh2 = DanhSachKhamBenh( YTa_ID=10,ngayKham=datetime(2023, 12, 2),maBN_ID=2)
+        # dskhambenh3 = DanhSachKhamBenh(YTa_ID=10, ngayKham=datetime(2023, 12, 3), maBN_ID=3)
+        # dskhambenh4 = DanhSachKhamBenh(YTa_ID=11, ngayKham=datetime(2023, 12, 4), maBN_ID=4)
+        # dskhambenh5 = DanhSachKhamBenh(YTa_ID=11, ngayKham=datetime(2023, 11, 5), maBN_ID=5)
+        # db.session.add_all([dskhambenh1, dskhambenh2,dskhambenh3,dskhambenh4,dskhambenh5])
         # db.session.commit()
         # #---------------------ADD PHIEUKHAMBENH------------------------
         # phieukhambenh1 = PhieuKhamBenh(trieuChung='Triệu chứng của bệnh nhân 1',
         #                    duDoanBenh='Dự đoán bệnh cho bệnh nhân 1',
-        #                          bacsi_ID=2,ngayLap=datetime(2016, 4, 20),maBN=1)
+        #                          bacsi_ID=2,ngayLap=datetime(2023, 12, 1),maBN=1)
         # phieukhambenh2 = PhieuKhamBenh(trieuChung='Triệu chứng của bệnh nhân 2',
         #                          duDoanBenh='Dự đoán bệnh cho bệnh nhân 2',
-        #                          bacsi_ID=3,ngayLap=datetime(2016, 4, 20),maBN=2)
-        # db.session.add_all([phieukhambenh1, phieukhambenh2])
+        #                          bacsi_ID=3,ngayLap=datetime(2023, 12, 2),maBN=2)
+        # phieukhambenh3 = PhieuKhamBenh(trieuChung='Triệu chứng của bệnh nhân 3',
+        #                                duDoanBenh='Dự đoán bệnh cho bệnh nhân 3',
+        #                                bacsi_ID=2, ngayLap=datetime(2023, 12, 3), maBN=3)
+        # phieukhambenh4 = PhieuKhamBenh(trieuChung='Triệu chứng của bệnh nhân 4',
+        #                                duDoanBenh='Dự đoán bệnh cho bệnh nhân 4',
+        #                                bacsi_ID=4, ngayLap=datetime(2023, 12, 1), maBN=4)
+        # phieukhambenh5 = PhieuKhamBenh(trieuChung='Triệu chứng của bệnh nhân 5',
+        #                                duDoanBenh='Dự đoán bệnh cho bệnh nhân 5',
+        #                                bacsi_ID=2, ngayLap=datetime(2023, 12, 2), maBN=5)
+        # db.session.add_all([phieukhambenh1, phieukhambenh2,phieukhambenh3,phieukhambenh4,phieukhambenh5])
         # db.session.commit()
         # # ---------------------HUONG DAN SU DUNG------------------------
         # huongdansudung1 = HuongDanSuDung(maThuoc_id=2,
@@ -617,13 +712,30 @@ if __name__ == "__main__":
         #                                  maPhieuKham_id=2,
         #                                  lieuDung=12,
         #                                  cachDung='Không được dùng đồng thời với các thuốc ho khác hoặc bất cứ thuốc nào làm giảm bài tiết đờm.')
-        # db.session.add_all([huongdansudung1, huongdansudung2])
+        # huongdansudung3 = HuongDanSuDung(maThuoc_id=1,
+        #                                  maPhieuKham_id=3,
+        #                                  lieuDung=10,
+        #                                  cachDung='Uống thuốc bằng một cốc nước lớn. Tránh uống cùng với các đồ uống có caffeine.')
+        # huongdansudung4 = HuongDanSuDung(maThuoc_id=4,
+        #                                  maPhieuKham_id=4,
+        #                                  lieuDung=9,
+        #                                  cachDung='Uống thuốc trước hoặc sau khi ăn, tùy thuộc vào hướng dẫn của bác sĩ. Hạn chế uống cùng với chất có thể tạo tác dụng phụ.')
+        #
+        # huongdansudung5 = HuongDanSuDung(maThuoc_id=9,
+        #                                  maPhieuKham_id=5,
+        #                                  lieuDung=5,
+        #                                  cachDung='Nên uống thuốc cùng một thời điểm mỗi ngày để duy trì liều lượng ổn định trong cơ thể.')
+        # db.session.add_all([huongdansudung1, huongdansudung2,huongdansudung3, huongdansudung4,huongdansudung5])
         # db.session.commit()
-        # #
         # # ---------------------HOADONTHANHTOAN------------------------
-        # hoadonthanhtoan1 = HoaDonThanhToan(tienKham=100000,tienThuoc=120000,thuNgan_id=8,maPhieuKham=1)
-        # hoadonthanhtoan2 = HoaDonThanhToan(tienKham=100000, tienThuoc=100000, thuNgan_id=9, maPhieuKham=2)
-        # db.session.add_all([hoadonthanhtoan1, hoadonthanhtoan2])
+        # hoadonthanhtoan1 = HoaDonThanhToan(tienKham=100000,tienThuoc=120000,thuNgan_id=12,maPhieuKham=1)
+        # hoadonthanhtoan2 = HoaDonThanhToan(tienKham=100000, tienThuoc=100000, thuNgan_id=12, maPhieuKham=2)
+        # hoadonthanhtoan3 = HoaDonThanhToan(tienKham=100000, tienThuoc=87650, thuNgan_id=12,maPhieuKham=3)
+        # hoadonthanhtoan4 = HoaDonThanhToan(tienKham=100000, tienThuoc=212578,  thuNgan_id=12,maPhieuKham=4)
+        # hoadonthanhtoan5 = HoaDonThanhToan(tienKham=100000, tienThuoc=145556,  thuNgan_id=13, maPhieuKham=5)
+        #
+        #
+        # db.session.add_all([hoadonthanhtoan1, hoadonthanhtoan2,hoadonthanhtoan3,hoadonthanhtoan4,hoadonthanhtoan5])
         # db.session.commit()
         #
         #
@@ -650,25 +762,24 @@ if __name__ == "__main__":
         # db.session.commit()
 
 
-
-    #########################
-        # c1 = Category(name="Iphone")
-        # c2 = Category(name="tablet")
-        #
-        # db.session.add(c1)
-        # db.session.add(c2)
-        # db.session.commit()
-    # # ########################
-    #     p1 = Product(name="IPhone15 Pro Max", price=10000000, Category_ID=2, image= "https://mobilepriceall.com/wp-content/uploads/2022/09/Apple-iPhone-14-1024x1024.jpg")
-    #     p2 = Product(name="IPhone12 Pro Max", price=20000000, Category_ID=2, image= "https://mobilepriceall.com/wp-content/uploads/2022/09/Apple-iPhone-14-1024x1024.jpg")
-    #     p3 = Product(name="IPhone13 Pro Max", price=30000000, Category_ID=2,  image= "https://mobilepriceall.com/wp-content/uploads/2022/09/Apple-iPhone-14-1024x1024.jpg")
-    #     p4 = Product(name="IPhone16 Pro Max", price=40000000, Category_ID=1,  image= "https://mobilepriceall.com/wp-content/uploads/2022/09/Apple-iPhone-14-1024x1024.jpg")
-    #     p5 = Product(name="IPhone19 Pro Max", price=90000000, Category_ID=1,  image= "https://mobilepriceall.com/wp-content/uploads/2022/09/Apple-iPhone-14-1024x1024.jpg")
-    #     p6 = Product(name="Samsung", price=10000000, Category_ID=2, image= "https://mobilepriceall.com/wp-content/uploads/2022/09/Apple-iPhone-14-1024x1024.jpg")
-    #     p7 = Product(name="Oppo Pro Max", price=20000000, Category_ID=2, image= "https://mobilepriceall.com/wp-content/uploads/2022/09/Apple-iPhone-14-1024x1024.jpg")
-    #     p8 = Product(name="realme Pro Max", price=30000000, Category_ID=2,  image= "https://mobilepriceall.com/wp-content/uploads/2022/09/Apple-iPhone-14-1024x1024.jpg")
-    #     p9 = Product(name="Oppo 2", price=40000000, Category_ID=1,  image= "https://mobilepriceall.com/wp-content/uploads/2022/09/Apple-iPhone-14-1024x1024.jpg")
-    #     p10 = Product(name="Samsung2 Pro Max", price=90000000, Category_ID=1,  image= "https://mobilepriceall.com/wp-content/uploads/2022/09/Apple-iPhone-14-1024x1024.jpg")
-    #     db.session.add_all([p1, p2, p3, p4, p5,p6, p7, p8, p9, p10])
-    #     db.session.commit()
-    # # #####
+#########################
+# c1 = Category(name="Iphone")
+# c2 = Category(name="tablet")
+#
+# db.session.add(c1)
+# db.session.add(c2)
+# db.session.commit()
+# # ########################
+#     p1 = Product(name="IPhone15 Pro Max", price=10000000, Category_ID=2, image= "https://mobilepriceall.com/wp-content/uploads/2022/09/Apple-iPhone-14-1024x1024.jpg")
+#     p2 = Product(name="IPhone12 Pro Max", price=20000000, Category_ID=2, image= "https://mobilepriceall.com/wp-content/uploads/2022/09/Apple-iPhone-14-1024x1024.jpg")
+#     p3 = Product(name="IPhone13 Pro Max", price=30000000, Category_ID=2,  image= "https://mobilepriceall.com/wp-content/uploads/2022/09/Apple-iPhone-14-1024x1024.jpg")
+#     p4 = Product(name="IPhone16 Pro Max", price=40000000, Category_ID=1,  image= "https://mobilepriceall.com/wp-content/uploads/2022/09/Apple-iPhone-14-1024x1024.jpg")
+#     p5 = Product(name="IPhone19 Pro Max", price=90000000, Category_ID=1,  image= "https://mobilepriceall.com/wp-content/uploads/2022/09/Apple-iPhone-14-1024x1024.jpg")
+#     p6 = Product(name="Samsung", price=10000000, Category_ID=2, image= "https://mobilepriceall.com/wp-content/uploads/2022/09/Apple-iPhone-14-1024x1024.jpg")
+#     p7 = Product(name="Oppo Pro Max", price=20000000, Category_ID=2, image= "https://mobilepriceall.com/wp-content/uploads/2022/09/Apple-iPhone-14-1024x1024.jpg")
+#     p8 = Product(name="realme Pro Max", price=30000000, Category_ID=2,  image= "https://mobilepriceall.com/wp-content/uploads/2022/09/Apple-iPhone-14-1024x1024.jpg")
+#     p9 = Product(name="Oppo 2", price=40000000, Category_ID=1,  image= "https://mobilepriceall.com/wp-content/uploads/2022/09/Apple-iPhone-14-1024x1024.jpg")
+#     p10 = Product(name="Samsung2 Pro Max", price=90000000, Category_ID=1,  image= "https://mobilepriceall.com/wp-content/uploads/2022/09/Apple-iPhone-14-1024x1024.jpg")
+#     db.session.add_all([p1, p2, p3, p4, p5,p6, p7, p8, p9, p10])
+#     db.session.commit()
+# # #####

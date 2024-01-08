@@ -3,7 +3,6 @@ from flask import Flask
 from urllib.parse import quote
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
-
 from datetime import datetime
 app=Flask(__name__)
 

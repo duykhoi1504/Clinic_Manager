@@ -8,7 +8,8 @@ from app import app, db
 import cloudinary.uploader
 from flask_login import current_user
 from sqlalchemy import func,extract,text
-from flask import session,request
+from flask import session
+from datetime import datetime
 
 
 #
@@ -191,30 +192,26 @@ def save_benhnhan_data_to_session(hoTen, ngaySinh, maCCCD, diaChi, email, soDien
 # Hàm để xác nhận và nhập vào cơ sở dữ liệu
 def confirm_benhnhan_and_insert_to_database():
     benhnhan_data = session.get('benhnhan_data', {})
-    lichkhambenh_data=session.get('lichkhambenh_data',{})
+
     if benhnhan_data:
-        # Thực hiện các kiểm tra hoặc xác nhận cần thiết
-        # Ví dụ: bạn có thể in dữ liệu ra console để kiểm tra
         print("Dữ liệu Bệnh nhân trong session:", benhnhan_data)
 
-        # Sau khi xác nhận, bạn có thể thực hiện nhập vào cơ sở dữ liệu
-        # Thực hiện nhập vào cơ sở dữ liệu ở đây
-        for data in benhnhan_data.values():
-            # Thực hiện nhập vào cơ sở dữ liệu, ví dụ:
-            BN = BenhNhan(hoTen=data['hoTen'],
-                          ngaySinh=data['ngaySinh'],
-                          maCCCD=data['maCCCD'],
-                          diaChi=data['diaChi'],
-                          email=data['email'],
-                          soDienThoai=data['soDienThoai'],
-                          tienSuBenh=data['tienSuBenh'],
-                          sex=data['sex'])
-            db.session.add(BN)
+        try:
+            for data in benhnhan_data.values():
+                BN = BenhNhan(**data)
+                db.session.add(BN)
+                db.session.commit()
+                dskb = DanhSachKhamBenh(YTa_ID=10, maBN_ID=BN.maBN, ngayKham=datetime.now())
+                db.session.add(dskb)
+
             db.session.commit()
+        except Exception as e:
+            print(f"An error occurred: {e}")
+            db.session.rollback()
+        finally:
+            db.session.close()
 
-
-    # Sau khi nhập, xóa dữ liệu từ session
-    session.pop('benhnhan_data')
+        session.pop('benhnhan_data')
 
 
 

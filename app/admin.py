@@ -24,7 +24,7 @@ class MyAdminIndex(AdminIndexView):
             print(
                 f"Ngày {ngay}: Số bệnh nhân: {so_benh_nhan}, Doanh thu: {doanh_thu}, Trung bình doanh thu: {trung_binh_doanh_thu}")
 
-        tansuatsudungthuoc = dao.bao_cao_tan_suat_su_dung_thuoc_theo_thang(2016,4)
+        tansuatsudungthuoc = dao.bao_cao_tan_suat_su_dung_thuoc_theo_thang(kw_nam,kw_thang)
         print(tansuatsudungthuoc)
 
 
@@ -114,6 +114,11 @@ class MyTacVuNhanVienView(AuthenticatedUser, BaseView):
         return self.render('admin/thongtinnhanvien.html', role=current_user.user_role, UserRoleEnum=UserRoleEnum)
 
 
+class MyClientViewReturn(AuthenticatedUser):
+    @expose('/')
+    def index(self):
+        return redirect('/')
+
 class MyLogoutView(AuthenticatedUser):
     @expose('/')
     def index(self):
@@ -200,7 +205,7 @@ class MyQuyDinhView(AuthenticatedAdmin):
     column_filters = ['maQD', 'tenQD']
     can_export = True
     can_view_details = True
-
+admin.add_view(MyClientViewReturn(name='Client page'))
 admin.add_view(MyDanhSachKhamBenhView(DanhSachKhamBenh, db.session, name='Danh Sách Khám Bệnh'))
 admin.add_view(MyBenhNhanView(BenhNhan, db.session, name='bệnh nhân'))
 admin.add_view(MyThuocView(Thuoc, db.session, name='Thuốc'))
@@ -212,3 +217,4 @@ admin.add_view(MyUserView(User, db.session))
 admin.add_view(MyQuyDinhView(QuyDinh, db.session,name='Quy định'))
 # admin.add_view(MyTacVuNhanVienView(name='Thông tin'))
 admin.add_view(MyLogoutView(name='Đăng xuất'))
+
